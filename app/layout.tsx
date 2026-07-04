@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LenisProvider from "@/components/LenisProvider";
 
 export const metadata: Metadata = {
   title: "PUSAKA | Bangga Belanja Produk Lokal",
@@ -13,7 +14,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet" />
+      </head>
       <body className="antialiased">
+        <LenisProvider />
         {children}
       </body>
     </html>
