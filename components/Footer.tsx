@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+
 const Instagram = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +36,7 @@ const Twitter = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const Facebook = (props: React.SVGProps<SVGSVGElement>) => (
+const TikTok = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -44,7 +47,7 @@ const Facebook = (props: React.SVGProps<SVGSVGElement>) => (
     strokeLinejoin="round"
     {...props}
   >
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
   </svg>
 );
 
@@ -67,78 +70,101 @@ const Linkedin = (props: React.SVGProps<SVGSVGElement>) => (
 
 const Footer = () => {
   return (
-    <footer className="relative bg-pusaka-black text-white pt-24 pb-12 overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/nusa_penida_footer.png"
-          alt="Nusa Penida Landscape"
-          fill
-          className="object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-pusaka-black via-pusaka-black/60 to-transparent"></div>
-      </div>
+    <footer className="w-full py-6 px-4 md:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Card Container */}
+        <div className="relative rounded-3xl overflow-hidden shadow-lg" style={{ aspectRatio: '16 / 5' }}>
+          {/* Background Image with Shadow Overlay */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/assets/footer.svg"
+              alt="Footer Background"
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/45"></div>
+          </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          {/* Brand Info */}
-          <div className="col-span-1 md:col-span-1">
-            <span className="text-3xl font-serif font-bold tracking-tighter mb-6 block">
-              <span className="text-accent-gold mr-1">❖</span> PUSAKA
-            </span>
-            <p className="text-gray-300 text-sm leading-relaxed max-w-xs">
-              Mempromosikan kekayaan budaya Indonesia melalui koleksi produk lokal berkualitas tinggi dan otentik.
-            </p>
-            <div className="flex space-x-4 mt-8">
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-accent-gold transition-colors">
-                <Instagram className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-accent-gold transition-colors">
-                <Twitter className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-accent-gold transition-colors">
-                <Facebook className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="p-2 bg-white/10 rounded-full hover:bg-accent-gold transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </Link>
+          <div className="relative z-10 px-8 md:px-12 py-6 h-full flex flex-col justify-between">
+            {/* Main Content Area */}
+            <div className="flex items-start justify-between flex-1">
+              {/* Left Section - Brand */}
+              <div className="flex flex-col justify-between h-full w-1/4">
+                <div>
+                  <div className="mb-3 flex items-center">
+                    <Image
+                      src="/assets/logo_putih.svg"
+                      alt="PUSAKA Logo"
+                      width={140}
+                      height={47}
+                      className="h-auto"
+                    />
+                  </div>
+                  <p className="text-white text-xs leading-relaxed max-w-xs font-sans">
+                    Mari kita lestarikan Budaya yang ada di Indonesia sampai ke kancah Internasional
+                  </p>
+                </div>
+                {/* Social Media Icons */}
+                <div className="flex gap-2">
+                  <Link href="#" className="p-1.5 text-white hover:text-[#C7782D] transition-colors duration-300">
+                    <Instagram className="h-4 w-4" />
+                  </Link>
+                  <Link href="#" className="p-1.5 text-white hover:text-[#C7782D] transition-colors duration-300">
+                    <Twitter className="h-4 w-4" />
+                  </Link>
+                  <Link href="#" className="p-1.5 text-white hover:text-[#C7782D] transition-colors duration-300">
+                    <TikTok className="h-4 w-4" />
+                  </Link>
+                  <Link href="#" className="p-1.5 text-white hover:text-[#C7782D] transition-colors duration-300">
+                    <Linkedin className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+
+              {/* Center Section - Company and Product */}
+              <div className="flex gap-12 justify-center items-start pt-4 flex-1">
+                {/* Company Links */}
+                <div className="text-center">
+                  <h4 className="text-white font-bold text-sm mb-2 font-sans">Company</h4>
+                  <ul className="space-y-1 text-white/90 text-xs font-sans">
+                    <li>
+                      <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
+                        Tentang Kami
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
+                        Program Kami
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Product Links */}
+                <div className="text-center">
+                  <h4 className="text-white font-bold text-sm mb-2 font-sans">Product</h4>
+                  <ul className="space-y-1 text-white/90 text-xs font-sans">
+                    <li>
+                      <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
+                        Tentang Kami
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
+                        Tentang Kami
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Section */}
+            <div className="pt-3 border-t border-white/20 flex flex-col md:flex-row justify-between items-center text-white/70 text-xs font-sans gap-2">
+              <p>© 2025 Pusaka Budaya Indonesia</p>
+              <p>All rights reserved</p>
             </div>
           </div>
-
-          {/* Links */}
-          <div>
-            <h4 className="font-serif text-lg font-semibold mb-6">Company</h4>
-            <ul className="space-y-4 text-gray-300 text-sm">
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Tentang Kami</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Program Kami</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Karir</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Kontak</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-serif text-lg font-semibold mb-6">Product</h4>
-            <ul className="space-y-4 text-gray-300 text-sm">
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Tentang Kami</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Tentang Kami</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Batik Solo</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Tenun Ikat</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-serif text-lg font-semibold mb-6">Support</h4>
-            <ul className="space-y-4 text-gray-300 text-sm">
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Pusat Bantuan</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Syarat & Ketentuan</Link></li>
-              <li><Link href="#" className="hover:text-accent-gold transition-colors">Kebijakan Privasi</Link></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-          <p>© 2024 Pusaka Nusantara. All Rights Reserved.</p>
-          <p>Membanggakan Budaya Bangsa</p>
         </div>
       </div>
     </footer>
