@@ -93,7 +93,7 @@ const Footer = () => {
                 <div>
                   <div className="mb-3 flex items-center">
                     <Image
-                      src="/assets/logo_putih.svg"
+                      src="/assets/Logo_putih.svg"
                       alt="PUSAKA Logo"
                       width={140}
                       height={47}

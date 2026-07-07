@@ -160,42 +160,89 @@ export default function Home() {
       </section>
 
       {/* Products Section - Produk Lokal Berkualitas */}
-      <section className="relative bg-white py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative bg-white py-16 md:py-24 px-4 md:px-8 lg:px-16 overflow-visible">
+        {/* Decorative Elements - Positioned absolutely in section */}
+        <div className="absolute top-0 right-0 w-72 h-72 md:w-96 md:h-96 opacity-60 pointer-events-none z-0">
+          <Image
+            src="/assets/bunga.svg"
+            alt="Decorative Flower"
+            width={360}
+            height={360}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 opacity-55 pointer-events-none z-0">
+          <Image
+            src="/assets/awan.svg"
+            alt="Decorative Cloud"
+            width={350}
+            height={350}
+            className="w-full h-full"
+          />
+        </div>
+        <div className="absolute bottom-20 left-1/3 w-24 h-24 md:w-40 md:h-40 opacity-40 pointer-events-none z-0">
+          <Image
+            src="/assets/bundar.svg"
+            alt="Decorative Circle"
+            width={160}
+            height={160}
+            className="w-full h-full"
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Header */}
-          <div className="text-center mb-16">
-            <h2 className="font-italiana text-5xl md:text-6xl lg:text-7xl text-gray-900 leading-tight tracking-tight mb-0">
-              Produk Lokal Berkualitas dari
+          <div className="text-center mb-12 relative z-10">
+            <h2 className="font-italiana text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight tracking-tight mb-3">
+              Temukan Produk Budaya
             </h2>
-            <p className="italianno-regular text-5xl md:text-6xl lg:text-7xl text-[#d48358] mb-3 leading-snug">
-              Seluruh Nusantara
+            <p className="font-italiana text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight tracking-tight mb-1">
+              Terbaik dari Seluruh
             </p>
-            <p className="text-sm md:text-base text-gray-600 leading-relaxed font-sans max-w-2xl mx-auto mb-3">
-             Dirancang oleh talenta Indonesia untuk memperkenalkan kekayaan budaya di setiap produknya, menghadirkan karya autentik yang mencerminkan kreativitas lokal, kualitas terbaik, serta warisan tradisi dari berbagai daerah di Nusantara.
+            <p className="font-italiana text-3xl md:text-4xl lg:text-5xl text-[#d48358] mb-4 leading-snug">
+              Indonesia
             </p>
+            <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-sans max-w-2xl mx-auto mb-6">
+             Menghadirkan produk autentik buatan pengrajin dan berbagai desain dari seluruh Indonesia dengan inovasi terkini.
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-xl mx-auto mb-8 relative z-10">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Cari Produk yogiaku sejalan"
+                  className="w-full px-6 py-3 md:py-4 border-b-2 border-gray-300 focus:border-[#d48358] outline-none text-sm md:text-base font-sans transition-colors"
+                />
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
           </div>
 
-          {/* Filter & Sort Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
-            <button className="px-5 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
-              Miniatur
+          {/* Category Filter Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10 relative z-10">
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              All Categories
             </button>
-            <button className="px-5 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
-              Pakaian Adat
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              Batik
             </button>
-            <button className="px-5 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
-              Amatic Kain
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              Jadi
             </button>
-            <button className="px-5 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
-              Atur Hasil
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              Tenun Ikat
             </button>
-            <button className="px-5 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
-              Urutkan Urutan
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              Kerajinan
+            </button>
+            <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-xs md:text-sm font-medium text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all duration-300">
+              Aksesoris
             </button>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative z-10 mb-12">
             {/* Product Card 1 */}
             <motion.div 
               className="group"
@@ -203,31 +250,31 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1570562886111-e80fcca6a029?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 2.000.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 2.000.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={`text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-[10px] md:text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 2 */}
@@ -238,31 +285,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1564467669556-c49baf103e5e?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 1.500.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 1.500.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-[#FFA500] text-xs">★</span>
+                  <span key={i} className="text-[#FFA500] text-[10px] md:text-xs">★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 3 */}
@@ -273,31 +320,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1531958519602-4282b12fed82?q=80&w=600&auto=format&fit=crop"
                     alt="Wayang"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Wayang</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 1.800.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Wayang</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 1.800.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={`text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-[10px] md:text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 4 */}
@@ -308,31 +355,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1604209850907-f01d058e1289?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1508693926297-1d61ee237220?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 2.200.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 2.200.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-[#FFA500] text-xs">★</span>
+                  <span key={i} className="text-[#FFA500] text-[10px] md:text-xs">★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 5 */}
@@ -343,31 +390,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1607631814075-e51df1bdc82f?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1580707385953-430979a2da0f?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 2.000.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 2.000.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={`text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-[10px] md:text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 6 */}
@@ -378,31 +425,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1602455074069-c2a4fb74174d?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1592195921149-11db59a44f6b?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 1.750.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 1.750.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-[#FFA500] text-xs">★</span>
+                  <span key={i} className="text-[#FFA500] text-[10px] md:text-xs">★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 7 */}
@@ -413,31 +460,31 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.6 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1590080876-43f37ca19cec?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1541356025477-a003b56c5d51?q=80&w=600&auto=format&fit=crop"
                     alt="Wayang"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Wayang</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 1.950.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Wayang</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 1.950.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={`text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
+                  <span key={i} className={`text-[10px] md:text-xs ${i < 4 ? 'text-[#FFA500]' : 'text-gray-300'}`}>★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
 
             {/* Product Card 8 */}
@@ -448,43 +495,32 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.7 }}
             >
-              <div className="relative mb-3">
-                <div className="relative aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-lg bg-gray-100">
+              <div className="relative mb-2 md:mb-3">
+                <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?q=80&w=600&auto=format&fit=crop"
+                    src="https://images.unsplash.com/photo-1560329007-38ca53fe626b?q=80&w=600&auto=format&fit=crop"
                     alt="Baju Batik Wanita"
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
-                    <Heart className="h-4 w-4 text-gray-700 hover:text-red-500 transition-colors" />
-                  </button>
-                  <button className="absolute bottom-3 right-3 px-3 py-2 bg-[#C7782D] text-white rounded-full text-xs font-medium hover:opacity-90 transition-opacity duration-300">
-                    Add to Cart
+                  <button className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white rounded-full shadow-sm hover:bg-gray-100 transition-all duration-300">
+                    <Heart className="h-3 md:h-4 w-3 md:w-4 text-gray-700 hover:text-red-500 transition-colors" />
                   </button>
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
-              <p className="text-xs text-gray-600 mb-1.5 font-medium">Banyak beberapa size</p>
-              <p className="text-sm font-semibold text-gray-900 mb-1.5">Rp 2.100.000.00</p>
-              <div className="flex items-center gap-0.5">
+              <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5">Baju Batik Wanita</h3>
+              <p className="text-[10px] md:text-xs text-gray-600 mb-1 font-medium">Banyak beberapa size</p>
+              <p className="text-xs md:text-sm font-semibold text-gray-900 mb-1.5">Rp 2.100.000</p>
+              <div className="flex items-center gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-[#FFA500] text-xs">★</span>
+                  <span key={i} className="text-[#FFA500] text-[10px] md:text-xs">★</span>
                 ))}
               </div>
+              <button className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] text-white rounded-lg text-[10px] md:text-xs font-medium hover:opacity-90 transition-opacity duration-300">
+                Add to Cart
+              </button>
             </motion.div>
-          </div>
-
-          {/* CTA Button */}
-          <div className="flex justify-end">
-            <Link
-              href="/catalog"
-              className="inline-flex items-center gap-1.5 px-6 py-2.5 md:py-3 bg-[#C7782D] rounded-full text-xs md:text-sm font-medium text-white hover:opacity-90 transition-all duration-300"
-            >
-              Lihat produk lainnya
-              <span>→</span>
-            </Link>
           </div>
         </div>
       </section>
