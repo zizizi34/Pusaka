@@ -16,13 +16,13 @@ const CatalogPage = () => {
   ];
 
   const products = [
-    { id: "1", name: "Outer Batik Marun Floral", price: "Rp 450.000", image: "https://images.unsplash.com/photo-1570562886111-e80fcca6a029?q=80&w=600&auto=format&fit=crop", rating: 5 },
+    { id: "1", name: "Outer Batik Marun Floral", price: "Rp 450.000", image: "https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=600&auto=format&fit=crop", rating: 5 },
     { id: "2", name: "Kemeja Batik Biru Emas", price: "Rp 525.000", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop", rating: 4 },
-    { id: "3", name: "Kain Tenun Ikat Sumba", price: "Rp 1.250.000", image: "https://images.unsplash.com/photo-1596120405461-59174b2f1505?q=80&w=600&auto=format&fit=crop", rating: 5 },
-    { id: "4", name: "Selendang Sutra Batik", price: "Rp 320.000", image: "https://images.unsplash.com/photo-1604209850907-f01d058e1289?q=80&w=600&auto=format&fit=crop", rating: 4 },
+    { id: "3", name: "Kain Tenun Ikat Sumba", price: "Rp 1.250.000", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=600&auto=format&fit=crop", rating: 5 },
+    { id: "4", name: "Selendang Sutra Batik", price: "Rp 320.000", image: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=600&auto=format&fit=crop", rating: 4 },
     { id: "5", name: "Kebaya Modern Putih", price: "Rp 680.000", image: "https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=600&auto=format&fit=crop", rating: 5 },
-    { id: "6", name: "Batik Pria Slim Fit", price: "Rp 410.000", image: "https://images.unsplash.com/photo-1607631814075-e51df1bdc82f?q=80&w=600&auto=format&fit=crop", rating: 4 },
-    { id: "7", name: "Tas Rotan Tradisional", price: "Rp 215.000", image: "https://images.unsplash.com/photo-1569025065846-4c526d5176d5?q=80&w=600&auto=format&fit=crop", rating: 5 },
+    { id: "6", name: "Batik Pria Slim Fit", price: "Rp 410.000", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop", rating: 4 },
+    { id: "7", name: "Tas Rotan Tradisional", price: "Rp 215.000", image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=600&auto=format&fit=crop", rating: 5 },
     { id: "8", name: "Kalung Manik Dayak", price: "Rp 185.000", image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=600&auto=format&fit=crop", rating: 4 },
   ];
 

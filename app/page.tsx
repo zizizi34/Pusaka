@@ -21,7 +21,7 @@ export default function Home() {
             backgroundImage: "url('/assets/home.svg')",
             backgroundAttachment: "fixed",
             backgroundPosition: "center center",
-            backgroundSize: "cover"
+            backgroundSize: "cover" 
           }}
         />
         <div className="absolute inset-0 bg-white/10 md:bg-white/0" />
@@ -99,7 +99,7 @@ export default function Home() {
               </div>
               <div className="relative aspect-[3/2] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
                 <Image
-                  src="https://images.unsplash.com/photo-1627931326442-bd9db93574c8?q=80&w=600&auto=format&fit=crop"
+                  src="/assets/traditional_dancers.png"
                   alt="Traditional dancers in front of house"
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -112,7 +112,7 @@ export default function Home() {
             <div className="flex flex-col">
               <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
                 <Image
-                  src="https://images.unsplash.com/photo-1596120405461-59174b2f1505?q=80&w=600&auto=format&fit=crop"
+                  src="/assets/handwoven_textile.png"
                   alt="Woman displaying handwoven textile"
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -253,7 +253,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -288,7 +288,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1564467669556-c49baf103e5e?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -323,7 +323,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1531958519602-4282b12fed82?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/wayang_puppet.png"
                     alt="Wayang"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -358,7 +358,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1508693926297-1d61ee237220?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -393,7 +393,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1580707385953-430979a2da0f?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -428,7 +428,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1592195921149-11db59a44f6b?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -463,7 +463,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1541356025477-a003b56c5d51?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/wayang_puppet.png"
                     alt="Wayang"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
@@ -498,7 +498,7 @@ export default function Home() {
               <div className="relative mb-2 md:mb-3">
                 <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
                   <Image
-                    src="https://images.unsplash.com/photo-1560329007-38ca53fe626b?q=80&w=600&auto=format&fit=crop"
+                    src="/assets/batik_shirt.png"
                     alt="Baju Batik Wanita"
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"

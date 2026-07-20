@@ -55,9 +55,9 @@ const Navbar = () => {
             <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
           </Link>
         )}
-        <button className="text-gray-700 hover:text-[#a5523d] transition-colors focus:outline-none">
+        <Link href="/dashboard" className="text-gray-700 hover:text-[#a5523d] transition-colors focus:outline-none">
           <User className="h-5 w-5 stroke-[1.5]" />
-        </button>
+        </Link>
       </div>
     </motion.nav>
   );

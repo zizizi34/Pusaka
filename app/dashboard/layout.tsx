@@ -18,188 +18,231 @@ import {
   SunMedium,
   TrendingUp,
   Warehouse,
+  X,
 } from "lucide-react";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+const menuGroups = [
+  {
+    label: "Overview",
+    items: [
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
+    ],
+  },
+  {
+    label: "Catalog",
+    items: [
+      { href: "/dashboard/products", label: "Products", icon: Package, exact: false },
+      { href: "/dashboard/products/new", label: "Add Product", icon: Plus, exact: true },
+      { href: "/dashboard/categories", label: "Categories", icon: Boxes, exact: false },
+      { href: "/dashboard/inventory", label: "Inventory", icon: Warehouse, exact: false },
+    ],
+  },
+  {
+    label: "Commerce",
+    items: [
+      { href: "/dashboard/transactions", label: "Transactions", icon: ShoppingBag, exact: false },
+      { href: "/dashboard/reports", label: "Reports", icon: TrendingUp, exact: false },
+      { href: "/dashboard/settings", label: "Settings", icon: Settings, exact: false },
+    ],
+  },
+];
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const pathname = usePathname();
 
-  const menuItems = [
-    {
-      href: "/dashboard",
-      label: "Dashboard",
-      icon: LayoutDashboard,
-      exact: true,
-    },
-    {
-      href: "/dashboard/products",
-      label: "Product Management",
-      icon: Package,
-      exact: false,
-    },
-    {
-      href: "/dashboard/products/new",
-      label: "Add Product",
-      icon: Plus,
-      exact: true,
-    },
-    {
-      href: "/dashboard",
-      label: "Categories",
-      icon: Boxes,
-      exact: false,
-    },
-    {
-      href: "/dashboard",
-      label: "Inventory",
-      icon: Warehouse,
-      exact: false,
-    },
-    {
-      href: "/dashboard",
-      label: "Transactions",
-      icon: ShoppingBag,
-      exact: false,
-    },
-    {
-      href: "/dashboard",
-      label: "Reports",
-      icon: TrendingUp,
-      exact: false,
-    },
-    {
-      href: "/dashboard",
-      label: "Settings",
-      icon: Settings,
-      exact: false,
-    },
-  ];
-
   const isActive = (href: string, exact: boolean = false) => {
-    if (exact) {
-      return pathname === href;
-    }
-    return pathname.startsWith(href);
+    if (exact) return pathname === href;
+    return pathname.startsWith(href) && href !== "/dashboard";
   };
 
+  const dm = darkMode;
+
   return (
-    <div className={`flex min-h-screen ${darkMode ? "bg-[#0f1411] text-white" : "bg-[#f6f7f2] text-[#18211a]"}`}>
+    <div className={`flex min-h-screen ${dm ? "bg-[#0d1210]" : "bg-[#f0f2ed]"}`}>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col border-r border-[#e7ebdf] bg-white/80 p-4 shadow-[0_20px_70px_rgba(0,0,0,0.06)] backdrop-blur-xl transition-transform duration-300 ease-out lg:sticky lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-60 flex-col transition-transform duration-300 ease-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } ${darkMode ? "border-white/10 bg-[#171d17]/90" : "border-[#e7ebdf] bg-white/80"}`}
+        } ${dm ? "bg-[#141a13] border-r border-white/[0.07]" : "bg-white border-r border-[#e5e8df]"}`}
       >
-        <div className="rounded-[24px] border border-[#ecece6] bg-gradient-to-br from-[#607456] to-[#5B7E3C] p-4 text-white shadow-[0_10px_30px_rgba(96,116,86,0.25)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 text-lg font-semibold backdrop-blur-sm">
+        {/* Brand */}
+        <div className="flex items-center justify-between px-5 pt-5 pb-4">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#607456] to-[#4c6640] text-xs font-bold text-white shadow">
               P
             </div>
             <div>
-              <p className="text-lg font-semibold">PUSAKA</p>
-              <p className="text-sm text-white/80">Inventory OS</p>
+              <p className={`text-sm font-bold tracking-wide ${dm ? "text-white" : "text-[#18211a]"}`}>PUSAKA</p>
+              <p className={`text-[10px] font-medium ${dm ? "text-white/35" : "text-[#aab8a2]"}`}>Admin Panel</p>
             </div>
-          </div>
+          </Link>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className={`flex h-6 w-6 items-center justify-center rounded-lg lg:hidden ${dm ? "text-white/40 hover:bg-white/10" : "text-[#aab8a2] hover:bg-[#f0f3ec]"}`}
+          >
+            <X size={14} />
+          </button>
         </div>
 
-        <nav className="mt-6 flex-1 space-y-1.5">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.href, item.exact);
-            return (
-              <Link
-                key={item.href + item.label}
-                href={item.href}
-                className={`flex items-center gap-3 rounded-[16px] px-3 py-3 text-sm font-medium transition-all duration-200 ${
-                  active
-                    ? "bg-gradient-to-r from-[#607456] to-[#5B7E3C] text-white shadow-[0_10px_30px_rgba(96,116,86,0.18)]"
-                    : darkMode
-                      ? "text-[#d7dfd3] hover:bg-white/10"
-                      : "text-[#4b5563] hover:bg-[#f5f7f2]"
-                }`}
-                onClick={() => setSidebarOpen(false)}
-              >
-                <span className={`flex h-9 w-9 items-center justify-center rounded-2xl ${active ? "bg-white/15" : darkMode ? "bg-white/10" : "bg-[#edf3e8]"}`}>
-                  <Icon size={18} />
-                </span>
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto px-3 pb-4">
+          {menuGroups.map((group) => (
+            <div key={group.label} className="mb-4">
+              <p className={`mb-1 px-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${dm ? "text-white/25" : "text-[#b8c4b0]"}`}>
+                {group.label}
+              </p>
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const active =
+                    (item.exact && pathname === item.href) ||
+                    (!item.exact && pathname.startsWith(item.href));
+                  return (
+                    <Link
+                      key={item.href + item.label}
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-all duration-150 ${
+                        active
+                          ? dm
+                            ? "bg-[#607456]/20 text-[#9dbb8c]"
+                            : "bg-[#edf3e8] text-[#3d5c35]"
+                          : dm
+                            ? "text-white/50 hover:bg-white/[0.07] hover:text-white"
+                            : "text-[#637060] hover:bg-[#f4f6f1] hover:text-[#18211a]"
+                      }`}
+                    >
+                      <span className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg ${
+                        active
+                          ? dm ? "bg-[#607456]/30 text-[#9dbb8c]" : "bg-[#d6e8cc] text-[#3d5c35]"
+                          : dm ? "bg-white/[0.07]" : "bg-[#f4f6f1]"
+                      }`}>
+                        <Icon size={15} />
+                      </span>
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div className={`mt-4 rounded-[20px] border p-3 ${darkMode ? "border-white/10 bg-white/10" : "border-[#ecece6] bg-[#fafaf8]"}`}>
+        {/* Sign out */}
+        <div className={`border-t px-3 py-3 ${dm ? "border-white/[0.07]" : "border-[#e5e8df]"}`}>
           <Link
             href="/"
-            className="flex items-center justify-center gap-2 rounded-[14px] bg-[#f4f2eb] px-4 py-3 text-sm font-semibold text-[#2c2c2c] transition hover:bg-[#eae7de]"
+            className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-medium transition-all ${
+              dm
+                ? "text-white/35 hover:bg-white/[0.07] hover:text-white/70"
+                : "text-[#9caa94] hover:bg-[#f4f6f1] hover:text-[#18211a]"
+            }`}
           >
-            <LogOut size={16} />
+            <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${dm ? "bg-white/[0.07]" : "bg-[#f4f6f1]"}`}>
+              <LogOut size={15} />
+            </span>
             Sign out
           </Link>
         </div>
       </aside>
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/35 backdrop-blur-sm lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
+      {/* Main */}
+      <div className="flex min-w-0 flex-1 flex-col">
 
-      <div className="flex-1">
-        <header className={`sticky top-0 z-30 border-b px-4 py-4 sm:px-6 lg:px-8 ${darkMode ? "border-white/10 bg-[#121712]/90 backdrop-blur-xl" : "border-[#ecece6] bg-white/80 backdrop-blur-xl"}`}>
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className={`flex h-10 w-10 items-center justify-center rounded-2xl border transition lg:hidden ${darkMode ? "border-white/10 bg-white/10" : "border-[#ecece6] bg-[#f8f8f5]"}`}
-                aria-label="Open menu"
-              >
-                <Menu size={18} />
-              </button>
-              <div>
-                <p className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#2c2c2c]"}`}>Operations Overview</p>
-                <p className={`text-sm ${darkMode ? "text-[#9ca3af]" : "text-[#6b7280]"}`}>Inventory management system</p>
-              </div>
-            </div>
+        {/* Top bar */}
+        <header className={`sticky top-0 z-30 border-b ${
+          dm ? "border-white/[0.07] bg-[#0d1210]/80 backdrop-blur-xl" : "border-[#e5e8df] bg-white/80 backdrop-blur-xl"
+        }`}>
+          <div className="flex h-[52px] items-center gap-3 px-4 sm:px-6">
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              <label className={`hidden items-center gap-2 rounded-[16px] border px-3 py-2 text-sm sm:flex ${darkMode ? "border-white/10 bg-white/10 text-[#d7dfd3]" : "border-[#ecece6] bg-[#fafaf8] text-[#6b7280]"}`}>
-                <Search size={16} />
+            {/* Hamburger */}
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className={`flex h-8 w-8 items-center justify-center rounded-lg transition lg:hidden ${
+                dm ? "text-white/50 hover:bg-white/10" : "text-[#637060] hover:bg-[#f0f3ec]"
+              }`}
+              aria-label="Open menu"
+            >
+              <Menu size={17} />
+            </button>
+
+            {/* Page label */}
+            <p className={`text-sm font-semibold ${dm ? "text-white" : "text-[#18211a]"}`}>
+              Dashboard
+            </p>
+
+            <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+
+              {/* Search */}
+              <label className={`hidden items-center gap-2 rounded-lg border px-2.5 py-1.5 sm:flex ${
+                dm ? "border-white/10 bg-white/[0.06] text-white/40" : "border-[#e5e8df] bg-[#f7f8f5] text-[#b0bba8]"
+              }`}>
+                <Search size={13} />
                 <input
-                  className={`w-36 border-0 bg-transparent outline-none sm:w-44 ${darkMode ? "text-white placeholder:text-[#8f9a8a]" : "placeholder:text-[#9ca3af]"}`}
-                  placeholder="Search"
+                  className={`w-28 border-0 bg-transparent text-sm outline-none lg:w-36 ${
+                    dm ? "text-white placeholder:text-white/25" : "text-[#18211a] placeholder:text-[#b8c4b0]"
+                  }`}
+                  placeholder="Search…"
                   aria-label="Search"
                 />
               </label>
-              <button className={`flex h-10 w-10 items-center justify-center rounded-2xl border transition ${darkMode ? "border-white/10 bg-white/10 text-[#d7dfd3]" : "border-[#ecece6] bg-[#fafaf8] text-[#2c2c2c]"}`} aria-label="Notifications">
-                <Bell size={18} />
-              </button>
+
+              {/* Bell */}
               <button
-                onClick={() => setDarkMode((value) => !value)}
-                className={`flex h-10 w-10 items-center justify-center rounded-2xl border transition ${darkMode ? "border-white/10 bg-white/10 text-[#d7dfd3]" : "border-[#ecece6] bg-[#fafaf8] text-[#2c2c2c]"}`}
+                className={`relative flex h-8 w-8 items-center justify-center rounded-lg transition ${
+                  dm ? "text-white/45 hover:bg-white/10" : "text-[#637060] hover:bg-[#f0f3ec]"
+                }`}
+                aria-label="Notifications"
+              >
+                <Bell size={16} />
+                <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-[#C7782D]" />
+              </button>
+
+              {/* Dark mode */}
+              <button
+                onClick={() => setDarkMode((v) => !v)}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
+                  dm ? "text-white/45 hover:bg-white/10" : "text-[#637060] hover:bg-[#f0f3ec]"
+                }`}
                 aria-label="Toggle theme"
               >
-                {darkMode ? <SunMedium size={18} /> : <MoonStar size={18} />}
+                {dm ? <SunMedium size={16} /> : <MoonStar size={16} />}
               </button>
-              <div className={`flex items-center gap-3 rounded-[16px] border px-3 py-2 ${darkMode ? "border-white/10 bg-white/10" : "border-[#ecece6] bg-[#fafaf8]"}`}>
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#607456] to-[#5B7E3C] font-semibold text-white">
+
+              {/* Separator */}
+              <div className={`h-5 w-px mx-0.5 ${dm ? "bg-white/10" : "bg-[#e5e8df]"}`} />
+
+              {/* User */}
+              <div className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#607456] to-[#4c6640] text-xs font-bold text-white">
                   AD
                 </div>
                 <div className="hidden sm:block">
-                  <p className={`text-sm font-semibold ${darkMode ? "text-white" : "text-[#2c2c2c]"}`}>Administrator</p>
-                  <p className={`text-xs ${darkMode ? "text-[#9ca3af]" : "text-[#6b7280]"}`}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+                  <p className={`text-sm font-semibold leading-none ${dm ? "text-white" : "text-[#18211a]"}`}>
+                    Administrator
+                  </p>
+                  <p className={`mt-0.5 text-[11px] ${dm ? "text-white/35" : "text-[#aab8a2]"}`}>
+                    {new Date().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="px-4 py-6 sm:px-6 lg:px-8">
+        {/* Content */}
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>

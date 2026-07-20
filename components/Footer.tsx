@@ -137,6 +137,11 @@ const Footer = () => {
                         Program Kami
                       </Link>
                     </li>
+                    <li>
+                      <Link href="/dashboard" className="hover:text-[#C7782D] transition-colors duration-300">
+                        Dashboard Admin
+                      </Link>
+                    </li>
                   </ul>
                 </div>
 

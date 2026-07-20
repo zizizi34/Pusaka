@@ -109,49 +109,37 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[32px] border border-[#ecece6] bg-[radial-gradient(circle_at_top_left,_rgba(96,116,86,0.14),_transparent_45%),linear-gradient(135deg,_#ffffff_0%,_#fafaf8_100%)] p-6 shadow-[0_20px_70px_rgba(0,0,0,0.05)] sm:p-8">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#e3e7da] bg-white/80 px-3 py-1 text-sm font-medium text-[#607456] shadow-sm">
-              <Sparkles size={14} />
-              Premium operations control
-            </div>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[#18211a] sm:text-5xl">
-              Dashboard
-            </h1>
-            <p className="mt-3 text-lg leading-8 text-[#6b7280]">
-              Welcome back, Administrator. Here is today&apos;s inventory overview and product health snapshot.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="rounded-full border border-[#ecece6] bg-white/80 px-3 py-1.5 text-sm text-[#4b5563]">
-                Live stock visibility
-              </span>
-              <span className="rounded-full border border-[#ecece6] bg-white/80 px-3 py-1.5 text-sm text-[#4b5563]">
-                Smart replenishment
-              </span>
-              <span className="rounded-full border border-[#ecece6] bg-white/80 px-3 py-1.5 text-sm text-[#4b5563]">
-                Executive reporting
-              </span>
-            </div>
+      {/* Page header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e3e7da] bg-white px-2.5 py-1 text-xs font-medium text-[#607456] mb-2">
+            <Sparkles size={12} />
+            Premium operations control
           </div>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/dashboard/products/new"
-              className="inline-flex items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-[#607456] to-[#5B7E3C] px-5 py-3.5 font-semibold text-white shadow-[0_12px_35px_rgba(96,116,86,0.25)] transition hover:-translate-y-0.5"
-            >
-              <Plus size={18} />
-              Add Product
-            </Link>
-            <button className="inline-flex items-center justify-center gap-2 rounded-[16px] border border-[#ecece6] bg-white px-5 py-3.5 font-semibold text-[#2c2c2c] transition hover:-translate-y-0.5">
-              <Download size={16} />
-              Export
-            </button>
-          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-[#18211a] sm:text-3xl">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-[#6b7280]">
+            Welcome back, Administrator. Here&apos;s today&apos;s inventory snapshot.
+          </p>
         </div>
-      </section>
+        <div className="flex items-center gap-2">
+          <button className="inline-flex items-center gap-2 rounded-xl border border-[#e5e8df] bg-white px-4 py-2 text-sm font-medium text-[#4b5563] transition hover:border-[#607456] hover:text-[#607456]">
+            <Download size={15} />
+            Export
+          </button>
+          <Link
+            href="/dashboard/products/new"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#607456] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#526342]"
+          >
+            <Plus size={15} />
+            Add Product
+          </Link>
+        </div>
+      </div>
 
-      <div className="flex flex-wrap gap-2">
+      {/* Filter pills */}
+      <div className="flex flex-wrap gap-1.5">
         {[
           { label: "This week", active: true },
           { label: "Low stock", active: false },
@@ -160,10 +148,10 @@ export default function DashboardPage() {
         ].map((item) => (
           <button
             key={item.label}
-            className={`rounded-full px-3.5 py-2 text-sm font-medium transition ${
+            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
               item.active
-                ? "bg-[#607456] text-white shadow-[0_8px_24px_rgba(96,116,86,0.2)]"
-                : "border border-[#ecece6] bg-white text-[#4b5563]"
+                ? "bg-[#607456] text-white"
+                : "border border-[#e5e8df] bg-white text-[#637060] hover:border-[#607456] hover:text-[#607456]"
             }`}
           >
             {item.label}

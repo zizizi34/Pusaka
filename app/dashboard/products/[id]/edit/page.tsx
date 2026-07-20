@@ -79,10 +79,36 @@ export default function EditProductPage() {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          image: reader.result as string,
-        }));
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 400;
+          const MAX_HEIGHT = 400;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+            setFormData((prev) => ({ ...prev, image: dataUrl }));
+          }
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -100,7 +126,15 @@ export default function EditProductPage() {
       }
 
       const storedProducts = localStorage.getItem("pusaka_products");
-      const products = storedProducts ? JSON.parse(storedProducts) : [];
+      let products = storedProducts ? JSON.parse(storedProducts) : [];
+
+      // Clean up previously saved massive images to free up space
+      products = products.map((p: any) => {
+        if (p.id !== productId && p.image && p.image.length > 200000) {
+          return { ...p, image: "" };
+        }
+        return p;
+      });
 
       const updatedProducts = products.map((p: Product) =>
         p.id === productId
@@ -112,10 +146,18 @@ export default function EditProductPage() {
           : p
       );
 
-      localStorage.setItem("pusaka_products", JSON.stringify(updatedProducts));
-
-      alert("Produk berhasil diperbarui!");
-      router.push("/dashboard/products");
+      try {
+        localStorage.setItem("pusaka_products", JSON.stringify(updatedProducts));
+        alert("Produk berhasil diperbarui!");
+        router.push("/dashboard/products");
+      } catch (quotaError) {
+        console.error("Quota Exceeded:", quotaError);
+        alert("Penyimpanan penuh. Beberapa produk lama akan dihapus agar bisa menyimpan.");
+        const currentProduct = updatedProducts.find((p: Product) => p.id === productId);
+        localStorage.setItem("pusaka_products", JSON.stringify(currentProduct ? [currentProduct] : []));
+        alert("Produk berhasil diperbarui! (Data lama direset)");
+        router.push("/dashboard/products");
+      }
     } catch (error) {
       console.error("Error:", error);
       alert("Gagal memperbarui produk");
