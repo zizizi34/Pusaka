@@ -208,7 +208,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative w-full bg-white select-none overflow-x-hidden">
+    <main className="relative w-full overflow-x-hidden bg-white">
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -216,7 +216,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-6 right-6 z-50 bg-[#18211a] text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10"
+            className="fixed bottom-4 left-4 right-4 z-50 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#18211a] px-5 py-3 text-white shadow-2xl sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-md"
           >
             <div className="w-7 h-7 rounded-full bg-[#607456] flex items-center justify-center flex-shrink-0">
               <Check className="w-4 h-4 text-white" />
@@ -236,145 +236,164 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative w-full min-h-screen flex items-center overflow-hidden pt-20 md:pt-16">
+      <section className="relative flex min-h-[min(760px,92svh)] w-full items-center overflow-hidden bg-[#241b16] pt-24 sm:pt-20">
         <div
           className="absolute inset-0 bg-center bg-cover bg-no-repeat"
           style={{
             backgroundImage: "url('/assets/home.svg')",
-            backgroundAttachment: "fixed",
             backgroundPosition: "center center",
             backgroundSize: "cover",
           }}
         />
-        <div className="absolute inset-0 bg-white/10 md:bg-white/0" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#211812]/85 via-[#211812]/60 to-[#211812]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#211812]/35 via-transparent to-[#211812]/10" />
 
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col items-center justify-center min-h-[calc(100vh-5rem)]">
+        <div className="relative z-10 mx-auto flex min-h-[inherit] w-full max-w-7xl items-center px-5 py-20 sm:px-8 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full flex flex-col items-center text-center"
+            className="w-full max-w-3xl text-left"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl xl:text-[72px] font-serif font-bold text-gray-900 leading-[1.05] tracking-[-0.03em] max-w-4xl">
-              Bangga Belanja <span className="block mt-3">Produk Lokal</span>
+            <p className="mb-5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/80 sm:text-xs">
+              <span className="h-px w-8 bg-[#e6a47b]" />
+              Pusaka · Kriya Nusantara
+            </p>
+            <h1 className="max-w-3xl font-serif text-[clamp(2.75rem,6.5vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.045em] text-white">
+              Karya lokal,{" "}
+              <span className="font-italiana italic text-[#efb18a]">cerita</span>
+              <br className="hidden sm:block" /> yang terus hidup.
             </h1>
 
-            <div className="mt-5 w-20 h-1 rounded-full bg-gradient-to-r from-[#d48358] to-[#e8a571]" />
-
-            <p className="mt-6 text-sm sm:text-sm md:text-base text-gray-600 font-sans max-w-3xl leading-7 px-2 sm:px-0">
-              Platform e-commerce yang menghubungkan kekayaan budaya Indonesia dengan dunia digital.
+            <p className="mt-6 max-w-xl text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
+              Temukan batik, tenun, dan kerajinan pilihan dari para perajin lokal—dibuat dengan tangan, membawa cerita dari Nusantara.
             </p>
 
-            <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row sm:justify-center sm:items-center">
+            <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
               <a
                 href="#products-section"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all duration-300 hover:border-gray-900 hover:text-gray-900 hover:shadow-md cursor-pointer"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7f2eb] px-6 text-sm font-semibold text-[#30231c] transition-colors hover:bg-white sm:w-auto"
               >
-                See Product
-                <Search className="h-4 w-4 text-gray-500 stroke-[1.5]" />
+                Jelajahi karya
+                <ArrowRight className="h-4 w-4" />
               </a>
               <Link
                 href="/catalog"
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-gray-900 px-6 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-300 hover:bg-gray-800 hover:shadow-md"
+                className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-white/40 px-6 text-sm font-medium text-white transition-colors hover:border-white hover:bg-white/10 sm:w-auto"
               >
-                Catalog
-                <ShoppingCart className="h-4 w-4 text-white stroke-[1.5]" />
+                Lihat katalog
               </Link>
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-white/25 pt-5 text-xs font-medium tracking-wide text-white/75 sm:text-sm">
+              <span>Batik &amp; wastra</span>
+              <span className="h-1 w-1 rounded-full bg-[#e6a47b]" />
+              <span>Tenun Nusantara</span>
+              <span className="h-1 w-1 rounded-full bg-[#e6a47b]" />
+              <span>Kriya pilihan</span>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Gallery Section */}
-      <section className="relative bg-white py-24 md:py-32 lg:py-40 px-6 md:px-12 lg:px-24">
-        <div className="max-w-7xl mx-auto">
-          {/* Header Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start mb-24">
-            <div className="flex flex-col justify-start">
-              <h2 className="text-5xl md:text-6xl lg:text-7xl font-italiana text-gray-900 leading-[1.02] tracking-[-0.04em]">
-                Drive into <br />
-                creativity with our
+      <section className="bg-white px-5 py-20 sm:px-8 md:py-28 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10 grid gap-6 md:mb-14 md:grid-cols-[1.1fr_0.9fr] md:items-end lg:gap-16">
+            <div>
+              <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#a75e3b]">
+                01 <span className="mx-2 text-[#c8b7a5]">/</span> Cerita dalam karya
+              </p>
+              <h2 className="max-w-2xl font-italiana text-4xl leading-[1.05] tracking-[-0.035em] text-[#28221d] sm:text-5xl lg:text-6xl">
+                Satu negeri, banyak cara bercerita.
               </h2>
-              <p className="text-4xl md:text-[3.75rem] lg:text-[4.5rem] italianno-regular text-[#d48358] mt-2 mb-8 leading-none tracking-[-0.02em]">
-                Galeri Collection
-              </p>
             </div>
-            <div className="flex flex-col justify-start">
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed font-sans max-w-lg text-left">
-                Menghadirkan mahakarya budaya Nusantara dari pengrajin terpilih. Setiap helai kain, pahatan kayu, dan ornamen tradisional membawa kisah leluhur yang abadi.
+            <div className="flex flex-col items-start gap-5 md:items-end">
+              <p className="max-w-md text-sm leading-7 text-[#6d655e] md:text-base md:leading-8 md:text-right">
+                Dari helai tenun hingga gerak tari, budaya tumbuh lewat tangan dan kebiasaan yang terus dijaga.
               </p>
+              <a
+                href="#products-section"
+                className="inline-flex items-center gap-2 border-b border-[#a75e3b]/40 pb-1 text-sm font-semibold text-[#68412e] transition-colors hover:border-[#a75e3b] hover:text-[#a75e3b]"
+              >
+                Lihat karya pilihan <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
           </div>
 
-          {/* Staggered Grid of 6 Images */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-end">
-            {/* Column 1 */}
-            <div className="flex flex-col gap-6">
-              <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=600&auto=format&fit=crop"
-                  alt="Hands sewing golden fabric"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
-              <div className="relative aspect-[3/2] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="/assets/traditional_dancers.png"
-                  alt="Traditional dancers in front of house"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+            <div className="group relative col-span-2 aspect-[5/3] overflow-hidden rounded-2xl bg-[#e9e3da] sm:rounded-3xl">
+              <Image
+                src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=1200&auto=format&fit=crop"
+                alt="Perajin mengerjakan kain dengan tangan"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
+                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/75 sm:text-[10px]">Proses &amp; ketekunan</p>
+                <h3 className="font-italiana text-xl sm:text-2xl">Detail yang dikerjakan tangan</h3>
               </div>
             </div>
 
-            {/* Column 2 */}
-            <div className="flex flex-col">
-              <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="/assets/handwoven_textile.png"
-                  alt="Woman displaying handwoven textile"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#e9e3da] sm:rounded-3xl">
+              <Image
+                src="/assets/handwoven_textile.png"
+                alt="Kain tenun tradisional dengan motif berwarna"
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-5">
+                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/75">Tekstur &amp; tradisi</p>
+                <h3 className="font-italiana text-lg leading-tight sm:text-xl">Tenun, simpul demi simpul</h3>
               </div>
             </div>
 
-            {/* Column 3 */}
-            <div className="flex flex-col">
-              <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=600&auto=format&fit=crop"
-                  alt="Couple in traditional red outfit"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#e9e3da] sm:rounded-3xl">
+              <Image
+                src="https://images.unsplash.com/photo-1583089892943-e02e5b017b6a?q=80&w=800&auto=format&fit=crop"
+                alt="Pasangan mengenakan busana tradisional"
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-5">
+                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/75">Ragam Nusantara</p>
+                <h3 className="font-italiana text-lg leading-tight sm:text-xl">Busana yang punya makna</h3>
               </div>
             </div>
 
-            {/* Column 4 */}
-            <div className="flex flex-col gap-6">
-              <div className="relative aspect-[3/4] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=600&auto=format&fit=crop"
-                  alt="Hands touching detailed batik fabric"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-[#e9e3da] sm:rounded-3xl">
+              <Image
+                src="/assets/traditional_dancers.png"
+                alt="Penari tradisional di depan rumah adat"
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white sm:p-5">
+                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-white/75">Gerak &amp; perayaan</p>
+                <h3 className="font-italiana text-lg leading-tight sm:text-xl">Tradisi yang terus bergerak</h3>
               </div>
-              <div className="relative aspect-[3/2] w-full rounded-3xl overflow-hidden shadow-lg group cursor-pointer">
-                <Image
-                  src="https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=600&auto=format&fit=crop"
-                  alt="Balinese dancers"
-                  fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
+            </div>
+
+            <div className="group relative col-span-2 aspect-[5/3] overflow-hidden rounded-2xl bg-[#e9e3da] sm:rounded-3xl">
+              <Image
+                src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1200&auto=format&fit=crop"
+                alt="Detail motif pada kain batik"
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 66vw, 50vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-6">
+                <p className="mb-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-white/75 sm:text-[10px]">Batik &amp; wastra</p>
+                <h3 className="font-italiana text-xl sm:text-2xl">Motif, dibuat perlahan</h3>
               </div>
             </div>
           </div>
@@ -382,91 +401,60 @@ export default function Home() {
       </section>
 
       {/* Products Section - Produk Lokal Berkualitas */}
-      <section id="products-section" className="relative bg-white py-16 md:py-24 px-4 md:px-8 lg:px-16 overflow-visible scroll-mt-20">
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 w-72 h-72 md:w-96 md:h-96 opacity-60 pointer-events-none z-0">
-          <Image
-            src="/assets/bunga.svg"
-            alt="Decorative Flower"
-            width={360}
-            height={360}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute top-0 left-0 w-72 h-72 md:w-96 md:h-96 opacity-55 pointer-events-none z-0">
-          <Image
-            src="/assets/awan.svg"
-            alt="Decorative Cloud"
-            width={350}
-            height={350}
-            className="w-full h-full"
-          />
-        </div>
-        <div className="absolute bottom-20 left-1/3 w-24 h-24 md:w-40 md:h-40 opacity-40 pointer-events-none z-0">
-          <Image
-            src="/assets/bundar.svg"
-            alt="Decorative Circle"
-            width={160}
-            height={160}
-            className="w-full h-full"
-          />
-        </div>
+      <section id="products-section" className="scroll-mt-20 bg-[#f7f5f0] px-5 py-20 sm:px-8 md:py-24 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-9 flex flex-col gap-6 lg:mb-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#a75e3b]">
+                02 <span className="mx-2 text-[#c8b7a5]">/</span> Pilihan perajin
+              </p>
+              <h2 className="font-italiana text-4xl leading-[1.05] tracking-[-0.035em] text-[#28221d] sm:text-5xl lg:text-6xl">
+                Karya untuk dibawa pulang.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-[#6d655e] md:text-base">
+                Pilih benda yang terasa dekat—dibuat dengan keterampilan, bahan, dan cerita yang berbeda.
+              </p>
+            </div>
 
-        <div className="max-w-7xl mx-auto relative z-10">
-          {/* Header */}
-          <div className="text-center mb-12 relative z-10">
-            <h2 className="font-italiana text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight tracking-tight mb-3">
-              Temukan Produk Budaya
-            </h2>
-            <p className="font-italiana text-3xl md:text-4xl lg:text-5xl text-gray-900 leading-tight tracking-tight mb-1">
-              Terbaik dari Seluruh
-            </p>
-            <p className="font-italiana text-3xl md:text-4xl lg:text-5xl text-[#d48358] mb-4 leading-snug">
-              Indonesia
-            </p>
-            <p className="text-xs md:text-sm text-gray-600 leading-relaxed font-sans max-w-2xl mx-auto mb-6">
-              Menghadirkan produk autentik buatan pengrajin dan berbagai desain dari seluruh Indonesia dengan inovasi terkini.
-            </p>
-
-            {/* Search Bar */}
-            <div className="max-w-xl mx-auto mb-8 relative z-10">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Cari Produk Budaya Indonesia (Batik, Tenun, Wayang)..."
-                  className="w-full px-6 py-3 md:py-4 border-b-2 border-gray-300 focus:border-[#d48358] outline-none text-sm md:text-base font-sans transition-colors placeholder:text-gray-400"
-                />
-                {searchQuery ? (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                ) : (
-                  <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                )}
-              </div>
+            <div className="relative w-full lg:max-w-sm">
+              <label htmlFor="product-search" className="sr-only">Cari produk</label>
+              <input
+                id="product-search"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari batik, tenun, kerajinan..."
+                className="w-full rounded-xl border border-[#ded8ce] bg-white py-3.5 pl-4 pr-11 text-sm text-[#28221d] outline-none transition-colors placeholder:text-[#9b938a] focus:border-[#a75e3b] focus:ring-2 focus:ring-[#a75e3b]/10"
+              />
+              {searchQuery ? (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Hapus pencarian"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#83796f] hover:bg-[#f1ede6] hover:text-[#28221d]"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : (
+                <Search className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#83796f]" />
+              )}
             </div>
           </div>
 
           {/* Category Filter Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 mb-10 relative z-10">
+          <div className="relative z-10 mb-8 flex flex-wrap items-center gap-2 border-b border-[#e5dfd5] pb-6">
             {categoriesList.map((cat) => {
               const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
               return (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all duration-300 ${
+                  className={`rounded-full border px-4 py-2 text-xs font-medium transition-colors sm:text-sm ${
                     isActive
-                      ? "bg-gray-900 text-white border border-gray-900 shadow-md scale-105"
-                      : "bg-white border border-gray-300 text-gray-700 hover:border-gray-900 hover:text-gray-900"
+                      ? "border-[#30231c] bg-[#30231c] text-white"
+                      : "border-[#ded8ce] bg-white/70 text-[#685e55] hover:border-[#a75e3b] hover:text-[#814a31]"
                   }`}
                 >
-                  {cat}
+                  {cat === "All Categories" ? "Semua" : cat}
                 </button>
               );
             })}
@@ -474,89 +462,96 @@ export default function Home() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative z-10 mb-12">
+            <div className="relative z-10 mb-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="animate-pulse rounded-xl bg-gray-50 p-2 border border-gray-100">
-                  <div className="aspect-[3/4] bg-gray-200 rounded-xl mb-3" />
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-gray-200 rounded w-1/2 mb-3" />
-                  <div className="h-8 bg-gray-200 rounded-lg" />
+                <div key={i} className="animate-pulse rounded-2xl border border-[#e8e2d7] bg-white p-2.5 sm:p-3">
+                  <div className="mb-3 aspect-[4/5] rounded-xl bg-[#eae6df]" />
+                  <div className="mb-2 h-3 w-1/3 rounded bg-[#eae6df]" />
+                  <div className="mb-3 h-4 w-3/4 rounded bg-[#eae6df]" />
+                  <div className="h-9 rounded-lg bg-[#eae6df]" />
                 </div>
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="relative z-10 py-16 text-center">
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#f8efe9] text-[#d48358] mb-4">
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#eee6dc] text-[#a75e3b]">
                 <PackageOpen size={30} />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                Tidak ada produk ditemukan
+              <h3 className="mb-1 text-lg font-semibold text-[#30231c]">
+                Belum ada karya yang cocok
               </h3>
-              <p className="text-sm text-gray-500 max-w-md mx-auto mb-6 font-sans">
+              <p className="mx-auto mb-6 max-w-md text-sm text-[#776e64]">
                 {searchQuery
-                  ? `Tidak ada produk dengan kata kunci "${searchQuery}". Coba kata kunci lain atau bersihkan pencarian.`
-                  : "Belum ada produk untuk kategori ini."}
+                  ? `Kami belum menemukan produk dengan kata kunci "${searchQuery}". Coba kata lain atau hapus pencarian.`
+                  : "Belum ada produk dalam kategori ini."}
               </p>
               <button
                 onClick={() => {
                   setSearchQuery("");
                   setSelectedCategory("All Categories");
                 }}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gray-900 text-white text-xs md:text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm"
+                className="inline-flex items-center gap-2 rounded-full bg-[#30231c] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#49372d]"
               >
-                Reset Filter
+                Hapus filter
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 relative z-10 mb-12">
+            <div className="relative z-10 mb-12 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {filteredProducts.map((product, idx) => (
                 <motion.div
                   key={product.id || idx}
-                  className="group flex flex-col justify-between"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#e8e2d7] bg-white p-2.5 shadow-[0_3px_14px_rgba(47,37,27,0.035)] transition-shadow hover:shadow-[0_12px_30px_rgba(47,37,27,0.10)] sm:rounded-3xl sm:p-3"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: (idx % 4) * 0.08 }}
                 >
-                  <div>
+                  <div className="flex h-full flex-col">
                     {/* Image Box */}
-                    <div className="relative mb-2 md:mb-3">
-                      <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden shadow-md bg-gray-100">
-                        {product.image && product.image.trim() !== "" ? (
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                            onError={(e) => {
-                              (e.currentTarget as HTMLImageElement).src = "/assets/batik_shirt.png";
-                            }}
-                          />
-                        ) : (
-                          <img
-                            src="/assets/batik_shirt.png"
-                            alt={product.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                          />
-                        )}
+                    <div className="relative">
+                      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-[#eeeae3] sm:rounded-2xl">
+                        <Link href={`/product/${product.id}`} className="absolute inset-0 z-0 block">
+                          {product.image && product.image.trim() !== "" ? (
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).src = "/assets/batik_shirt.png";
+                              }}
+                            />
+                          ) : (
+                            <img
+                              src="/assets/batik_shirt.png"
+                              alt={product.name}
+                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                            />
+                          )}
+                        </Link>
 
                         {/* Badge Baru jika ditambahkan user */}
                         {product.isNew && (
-                          <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#C7782D] text-white shadow-sm flex items-center gap-1 z-10">
+                          <span className="pointer-events-none absolute left-2 top-2 z-10 flex items-center gap-1 rounded-full bg-[#a75e3b] px-2 py-1 text-[9px] font-semibold uppercase tracking-wider text-white shadow-sm sm:left-3 sm:top-3 sm:text-[10px]">
                             <Sparkles className="w-2.5 h-2.5" /> Baru
                           </span>
                         )}
 
                         {/* Wishlist Button */}
                         <button
-                          onClick={() => toggleLike(product.id)}
-                          className="absolute top-2 md:top-3 right-2 md:right-3 p-1.5 md:p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all duration-300 z-10"
-                          aria-label="Wishlist"
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleLike(product.id);
+                          }}
+                          className="absolute right-2 top-2 z-10 rounded-full bg-white/90 p-2 text-[#514840] shadow-sm backdrop-blur-sm transition-colors hover:bg-white hover:text-[#a75e3b] sm:right-3 sm:top-3"
+                          aria-label={likedProducts[product.id] ? "Hapus dari favorit" : "Tambah ke favorit"}
+                          aria-pressed={Boolean(likedProducts[product.id])}
                         >
                           <Heart
-                            className={`h-3 md:h-4 w-3 md:w-4 transition-colors ${
+                            className={`h-4 w-4 transition-colors ${
                               likedProducts[product.id]
                                 ? "text-red-500 fill-red-500"
-                                : "text-gray-700 hover:text-red-500"
+                                : "text-current"
                             }`}
                           />
                         </button>
@@ -564,24 +559,27 @@ export default function Home() {
                     </div>
 
                     {/* Product Info */}
-                    <div className="mb-2">
-                      <span className="text-[10px] md:text-xs font-semibold text-[#d48358] uppercase tracking-wider block mb-0.5">
+                    <div className="flex flex-1 flex-col pt-3">
+                      <span className="mb-1 block text-[9px] font-semibold uppercase tracking-[0.14em] text-[#a75e3b] sm:text-[10px]">
                         {product.category}
                       </span>
-                      <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-0.5 line-clamp-1 group-hover:text-[#d48358] transition-colors">
-                        {product.name}
-                      </h3>
-                      <p className="text-[10px] md:text-xs text-gray-500 mb-1 line-clamp-1 font-sans">
+                      <Link href={`/product/${product.id}`} className="block">
+                        <h3 className="mb-1 line-clamp-2 min-h-9 text-xs font-semibold leading-5 text-[#30231c] transition-colors hover:text-[#a75e3b] group-hover:text-[#a75e3b] sm:text-sm">
+                          {product.name}
+                        </h3>
+                      </Link>
+                      <p className="mb-2 line-clamp-2 min-h-8 text-[10px] leading-4 text-[#81786f] sm:text-xs">
                         {product.description || "Produk lokal autentik berkualitas prima"}
                       </p>
-                      <p className="text-xs md:text-sm font-bold text-gray-900 mb-1">
+                      <p className="mb-1 text-xs font-bold text-[#30231c] sm:text-sm">
                         Rp {product.price.toLocaleString("id-ID")}
                       </p>
-                      <div className="flex items-center gap-0.5">
+                      <div className="mb-3 flex items-center gap-0.5" aria-label={`Rating ${product.rating || 5} dari 5`}>
                         {[...Array(5)].map((_, i) => (
                           <span
                             key={i}
-                            className={`text-[10px] md:text-xs ${
+                            aria-hidden="true"
+                            className={`text-[10px] ${
                               i < (product.rating || 5) ? "text-[#FFA500]" : "text-gray-300"
                             }`}
                           >
@@ -595,10 +593,10 @@ export default function Home() {
                   {/* Add to Cart Button */}
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="w-full px-2 md:px-3 py-1.5 md:py-2 bg-[#C7782D] hover:bg-[#b06826] active:scale-[0.98] text-white rounded-lg text-[10px] md:text-xs font-medium transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm mt-1"
+                    className="mt-auto flex min-h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-[#30231c] px-2 text-[10px] font-medium text-white transition-colors hover:bg-[#49372d] active:scale-[0.98] sm:text-xs"
                   >
-                    <ShoppingCart className="w-3.5 h-3.5" />
-                    Add to Cart
+                    <ShoppingCart className="h-3.5 w-3.5" />
+                    Tambah ke keranjang
                   </button>
                 </motion.div>
               ))}
@@ -609,9 +607,9 @@ export default function Home() {
           <div className="text-center relative z-10 pt-4">
             <Link
               href="/catalog"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-300 hover:border-gray-900 text-gray-800 text-xs md:text-sm font-medium transition-all hover:gap-3"
+              className="inline-flex items-center gap-2 rounded-full border border-[#cfc5b8] px-6 py-3 text-xs font-medium text-[#514840] transition-all hover:gap-3 hover:border-[#30231c] hover:text-[#30231c] sm:text-sm"
             >
-              Lihat Seluruh Katalog Produk
+              Lihat seluruh katalog
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

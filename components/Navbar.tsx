@@ -16,7 +16,7 @@ const Navbar = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="fixed top-12 left-1/2 -translate-x-1/2 z-50 w-fit px-8 md:px-12 py-2.5 md:py-3 bg-white/85 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-full border border-white/40 flex items-center justify-between transition-all duration-300"
+      className="fixed top-3 sm:top-5 md:top-6 lg:top-7 left-1/2 -translate-x-1/2 z-50 w-fit max-w-[94vw] px-5 sm:px-8 md:px-10 py-2 sm:py-2.5 bg-white/90 backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-full border border-white/40 flex items-center justify-between transition-all duration-300"
     >
       {/* Logo */}
       <Link href="/" className="flex items-center">

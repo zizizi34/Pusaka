@@ -69,11 +69,11 @@ export default function AdminDashboardShell({
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[260px] flex-col border-r border-[#e8ebe5] bg-white transition-transform duration-200 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[240px] xl:w-[260px] flex-col border-r border-[#e8ebe5] bg-white transition-transform duration-200 lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex h-[76px] items-center justify-between border-b border-[#edf0eb] px-5">
+        <div className="flex h-16 lg:h-[68px] items-center justify-between border-b border-[#edf0eb] px-5">
           <Link
             href="/dashboard"
             className="flex items-center gap-3"
@@ -156,8 +156,8 @@ export default function AdminDashboardShell({
         </div>
       </aside>
 
-      <div className="min-h-screen lg:pl-[260px]">
-        <header className="sticky top-0 z-30 flex h-[76px] items-center border-b border-[#e8ebe5] bg-white/95 px-4 backdrop-blur sm:px-7 lg:px-9">
+      <div className="min-h-screen lg:pl-[240px] xl:pl-[260px]">
+        <header className="sticky top-0 z-30 flex h-16 lg:h-[68px] items-center border-b border-[#e8ebe5] bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
@@ -189,7 +189,7 @@ export default function AdminDashboardShell({
           </div>
         </header>
 
-        <main className="px-4 py-6 sm:px-7 sm:py-8 lg:px-9">
+        <main className="px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
           <div className="mx-auto max-w-[1440px]">{children}</div>
         </main>
       </div>

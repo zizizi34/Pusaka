@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { Search, SlidersHorizontal, ChevronRight, PackageOpen } from 'lucide-react';
+import { ArrowDown, ArrowRight, PackageOpen, Search, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ProductItem {
@@ -16,6 +17,33 @@ interface ProductItem {
   rating: number;
   category?: string;
   description?: string;
+}
+
+function parseCatalogProduct(value: unknown): ProductItem | null {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+
+  const item = value as Record<string, unknown>;
+  const price = typeof item.price === 'number' ? item.price : Number(item.price);
+  if (typeof item.id !== 'string' || typeof item.name !== 'string' || !Number.isFinite(price)) return null;
+
+  return {
+    id: item.id,
+    name: item.name,
+    category: typeof item.category === 'string' ? item.category : undefined,
+    price: `Rp ${price.toLocaleString('id-ID')}`,
+    image: typeof item.image === 'string' && item.image.trim() ? item.image : '/assets/batik_shirt.png',
+    rating: typeof item.rating === 'number' && Number.isFinite(item.rating) ? item.rating : 5,
+    description: typeof item.description === 'string' ? item.description : undefined,
+  };
+}
+
+function parseCatalogProducts(value: unknown): ProductItem[] {
+  return Array.isArray(value)
+    ? value.flatMap((item) => {
+        const product = parseCatalogProduct(item);
+        return product ? [product] : [];
+      })
+    : [];
 }
 
 const DEFAULT_CATALOG_PRODUCTS: ProductItem[] = [
@@ -41,18 +69,8 @@ const CatalogPage = () => {
       try {
         const res = await fetch('/api/products');
         if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            dbItems = data.map((item: any) => ({
-              id: item.id,
-              name: item.name,
-              category: item.category,
-              price: `Rp ${Number(item.price).toLocaleString('id-ID')}`,
-              image: item.image || '/assets/batik_shirt.png',
-              rating: item.rating || 5,
-              description: item.description,
-            }));
-          }
+          const data: unknown = await res.json();
+          dbItems = parseCatalogProducts(data);
         }
       } catch (err) {
         console.warn('Gagal ambil data katalog dari API:', err);
@@ -63,18 +81,8 @@ const CatalogPage = () => {
       try {
         const stored = localStorage.getItem('pusaka_products');
         if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) {
-            localItems = parsed.map((item: any) => ({
-              id: item.id,
-              name: item.name,
-              category: item.category,
-              price: `Rp ${Number(item.price).toLocaleString('id-ID')}`,
-              image: item.image || '/assets/batik_shirt.png',
-              rating: item.rating || 5,
-              description: item.description,
-            }));
-          }
+          const parsed: unknown = JSON.parse(stored);
+          localItems = parseCatalogProducts(parsed);
         }
       } catch (err) {
         console.warn('Gagal baca localStorage di katalog:', err);
@@ -114,7 +122,8 @@ const CatalogPage = () => {
       const matchSearch =
         searchQuery === '' ||
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase()));
+        (p.category && p.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
       const matchCategory =
         activeCategory === 'Semua' ||
@@ -126,107 +135,170 @@ const CatalogPage = () => {
   }, [products, searchQuery, activeCategory]);
 
   return (
-    <main className="min-h-screen pt-20 bg-white">
+    <main className="min-h-screen overflow-x-hidden bg-white">
       <Navbar />
 
-      {/* Sub-Hero Card Banner */}
-      <section className="py-8 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative rounded-3xl overflow-hidden shadow-lg" style={{ aspectRatio: '16 / 5' }}>
-            {/* Background Image with Shadow Overlay */}
-            <Image 
-              src="/banner_bg.png" 
-              alt="Weaving Texture" 
-              fill 
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/45"></div>
+      <section className="relative flex min-h-[min(620px,78svh)] items-center overflow-hidden bg-[#241b16] pt-24 sm:pt-20">
+        <Image
+          src="/banner_bg.png"
+          alt="Tekstur kain tenun tradisional"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#211812]/85 via-[#211812]/60 to-[#211812]/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#211812]/35 via-transparent to-[#211812]/10" />
 
-            {/* Content */}
-            <div className="relative z-10 px-8 md:px-16 h-full flex flex-col justify-center">
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-white text-3xl md:text-5xl font-bold mb-3 font-serif"
-              >
-                Merajut Warisan Nusantara
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-white/90 text-sm md:text-base font-sans max-w-lg"
-              >
-                Menghubungkan pengrajin lokal dengan pembeli di seluruh Indonesia
-              </motion.p>
-            </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: 'easeOut' }}
+          className="relative z-10 mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 lg:px-12"
+        >
+          <div className="max-w-3xl">
+            <p className="mb-5 flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/80 sm:text-xs">
+              <span className="h-px w-8 bg-[#e6a47b]" />
+              Pusaka · Kriya Nusantara
+            </p>
+            <h1 className="font-serif text-[clamp(2.75rem,6.5vw,5.75rem)] font-medium leading-[0.98] tracking-[-0.045em] text-white">
+              Setiap karya
+              <br className="hidden sm:block" /> punya <span className="font-italiana italic text-[#efb18a]">cerita.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
+              Jelajahi batik, tenun, dan kriya pilihan yang dibuat oleh tangan-tangan terampil di seluruh Nusantara.
+            </p>
+            <a
+              href="#products-section"
+              className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#f7f2eb] px-6 text-sm font-semibold text-[#30231c] transition-colors hover:bg-white"
+            >
+              Temukan karya pilihan <ArrowDown className="h-4 w-4" />
+            </a>
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Search & Filter Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-serif mb-8 text-pusaka-black">
-              Temukan Produk Budaya Terbaik...
-            </h2>
-            
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative mb-12">
+      <section id="products-section" className="scroll-mt-20 bg-[#f7f5f0] px-5 py-16 sm:px-8 md:py-24 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-9 flex flex-col gap-6 lg:mb-10 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#a75e3b]">
+                Temukan pilihanmu
+              </p>
+              <h2 className="font-italiana text-4xl leading-[1.05] tracking-[-0.035em] text-[#28221d] sm:text-5xl lg:text-6xl">
+                Karya untuk dibawa pulang.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-7 text-[#6d655e] md:text-base">
+                Benda penuh makna, dirawat dalam proses dan diteruskan dari generasi ke generasi.
+              </p>
+            </div>
+
+            <div className="relative w-full lg:max-w-sm">
+              <label htmlFor="catalog-search" className="sr-only">Cari produk</label>
               <input
+                id="catalog-search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari Batik, Tenun, atau Kerajinan..."
-                className="w-full border-b-2 border-pusaka-border py-4 px-12 text-lg focus:border-accent-gold outline-none transition-colors font-sans"
+                placeholder="Cari batik, tenun, kerajinan..."
+                className="w-full rounded-xl border border-[#ded8ce] bg-white py-3.5 pl-4 pr-11 text-sm text-[#28221d] outline-none transition-colors placeholder:text-[#9b938a] focus:border-[#a75e3b] focus:ring-2 focus:ring-[#a75e3b]/10"
               />
-              <Search className="absolute left-2 top-4.5 h-6 w-6 text-gray-400" />
-            </div>
-
-            {/* Category Tags */}
-            <div className="flex overflow-x-auto pb-4 scrollbar-hide space-x-4 justify-start md:justify-center">
-              {categories.map((cat) => (
+              {searchQuery ? (
                 <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`whitespace-nowrap px-8 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
-                    activeCategory === cat 
-                    ? 'bg-pusaka-black text-white shadow-lg' 
-                    : 'bg-pusaka-gray text-gray-600 hover:bg-gray-200'
-                  }`}
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Hapus pencarian"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#83796f] hover:bg-[#f1ede6] hover:text-[#28221d]"
                 >
-                  {cat}
+                  <X className="h-4 w-4" />
                 </button>
-              ))}
+              ) : (
+                <Search className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#83796f]" />
+              )}
             </div>
           </div>
 
-          {/* Product Grid */}
+          <div className="mb-7 flex flex-wrap items-center gap-2 border-b border-[#e5dfd5] pb-6">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                aria-pressed={activeCategory === cat}
+                className={`whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-colors sm:text-sm ${
+                  activeCategory === cat
+                    ? 'border-[#30231c] bg-[#30231c] text-white'
+                    : 'border-[#ded8ce] bg-white/70 text-[#685e55] hover:border-[#a75e3b] hover:text-[#814a31]'
+                }`}
+              >
+                {cat === 'Semua' ? 'Semua karya' : cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="mb-5 flex items-center justify-between gap-3 text-xs text-[#81786f] sm:text-sm">
+            <p aria-live="polite">
+              {loading ? 'Menyiapkan pilihan...' : `${filteredProducts.length} karya ditemukan`}
+            </p>
+            {searchQuery || activeCategory !== 'Semua' ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('Semua');
+                }}
+                className="inline-flex items-center gap-1 font-medium text-[#814a31] hover:text-[#a75e3b]"
+              >
+                Hapus filter <X className="h-3.5 w-3.5" />
+              </button>
+            ) : null}
+          </div>
+
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="animate-pulse bg-gray-100 rounded-xl h-72" />
+                <div key={i} className="animate-pulse rounded-2xl border border-[#e8e2d7] bg-white p-2.5 sm:rounded-3xl sm:p-3">
+                  <div className="mb-3 aspect-[4/5] rounded-xl bg-[#eae6df] sm:rounded-2xl" />
+                  <div className="mb-2 h-3 w-1/3 rounded bg-[#eae6df]" />
+                  <div className="mb-3 h-4 w-3/4 rounded bg-[#eae6df]" />
+                  <div className="h-4 w-1/2 rounded bg-[#eae6df]" />
+                </div>
               ))}
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="py-16 text-center">
-              <PackageOpen size={40} className="mx-auto text-gray-400 mb-3" />
-              <p className="text-gray-600 font-medium">Tidak ada produk ditemukan untuk kriteria ini.</p>
+              <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#eee6dc] text-[#a75e3b]">
+                <PackageOpen size={30} />
+              </div>
+              <h3 className="mb-1 text-lg font-semibold text-[#30231c]">Belum ada karya yang cocok</h3>
+              <p className="mx-auto mb-6 max-w-md text-sm text-[#776e64]">
+                Coba kata kunci lain atau pilih kategori yang berbeda.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setActiveCategory('Semua');
+                }}
+                className="rounded-full bg-[#30231c] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#49372d]"
+              >
+                Tampilkan semua karya
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} {...product} />
               ))}
             </div>
           )}
 
-          {/* Load More */}
-          <div className="mt-20 text-center">
-            <button className="px-12 py-4 border border-pusaka-black text-pusaka-black rounded-full font-medium hover:bg-pusaka-black hover:text-white transition-all duration-300">
-              Muat Lebih Banyak
-            </button>
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/#products-section"
+              className="inline-flex items-center gap-2 rounded-full border border-[#cfc5b8] px-6 py-3 text-xs font-medium text-[#514840] transition-all hover:gap-3 hover:border-[#30231c] hover:text-[#30231c] sm:text-sm"
+            >
+              Kembali ke beranda <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>

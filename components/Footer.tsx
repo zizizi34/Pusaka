@@ -73,7 +73,7 @@ const Footer = () => {
     <footer className="w-full py-6 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Card Container */}
-        <div className="relative rounded-3xl overflow-hidden shadow-lg" style={{ aspectRatio: '16 / 5' }}>
+        <div className="relative min-h-[420px] overflow-hidden rounded-3xl shadow-lg sm:min-h-[360px] lg:aspect-[16/6] lg:min-h-0 xl:aspect-[16/5]">
           {/* Background Image with Shadow Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -85,11 +85,11 @@ const Footer = () => {
             <div className="absolute inset-0 bg-black/45"></div>
           </div>
 
-          <div className="relative z-10 px-8 md:px-12 py-6 h-full flex flex-col justify-between">
+          <div className="relative z-10 flex h-full min-h-[inherit] flex-col justify-between gap-8 px-6 py-7 sm:px-8 sm:py-8 lg:min-h-0 lg:px-10 lg:py-8 xl:px-12">
             {/* Main Content Area */}
-            <div className="flex items-start justify-between flex-1">
+            <div className="flex flex-1 flex-col justify-between gap-8 sm:flex-row">
               {/* Left Section - Brand */}
-              <div className="flex flex-col justify-between h-full w-1/4">
+              <div className="flex flex-col justify-between gap-4 sm:w-2/5 lg:w-1/3">
                 <div>
                   <div className="mb-3 flex items-center">
                     <Image
@@ -97,10 +97,10 @@ const Footer = () => {
                       alt="PUSAKA Logo"
                       width={140}
                       height={47}
-                      className="h-auto"
+                      className="h-auto w-[120px] sm:w-[140px]"
                     />
                   </div>
-                  <p className="text-white text-xs leading-relaxed max-w-xs font-sans">
+                  <p className="max-w-xs font-sans text-xs leading-relaxed text-white">
                     Mari kita lestarikan Budaya yang ada di Indonesia sampai ke kancah Internasional
                   </p>
                 </div>
@@ -122,11 +122,11 @@ const Footer = () => {
               </div>
 
               {/* Center Section - Company and Product */}
-              <div className="flex gap-12 justify-center items-start pt-4 flex-1">
+              <div className="grid grid-cols-2 items-start gap-6 sm:flex sm:justify-end sm:gap-10 sm:pt-4 lg:flex-1 lg:justify-center lg:gap-12">
                 {/* Company Links */}
-                <div className="text-center">
-                  <h4 className="text-white font-bold text-sm mb-2 font-sans">Company</h4>
-                  <ul className="space-y-1 text-white/90 text-xs font-sans">
+                <div className="text-left sm:text-center">
+                  <h4 className="mb-2 font-sans text-sm font-bold text-white">Company</h4>
+                  <ul className="space-y-1 font-sans text-xs text-white/90">
                     <li>
                       <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
                         Tentang Kami
@@ -146,9 +146,9 @@ const Footer = () => {
                 </div>
 
                 {/* Product Links */}
-                <div className="text-center">
-                  <h4 className="text-white font-bold text-sm mb-2 font-sans">Product</h4>
-                  <ul className="space-y-1 text-white/90 text-xs font-sans">
+                <div className="text-left sm:text-center">
+                  <h4 className="mb-2 font-sans text-sm font-bold text-white">Product</h4>
+                  <ul className="space-y-1 font-sans text-xs text-white/90">
                     <li>
                       <Link href="#" className="hover:text-[#C7782D] transition-colors duration-300">
                         Tentang Kami
@@ -165,7 +165,7 @@ const Footer = () => {
             </div>
 
             {/* Bottom Section */}
-            <div className="pt-3 border-t border-white/20 flex flex-col md:flex-row justify-between items-center text-white/70 text-xs font-sans gap-2">
+            <div className="flex flex-col items-start justify-between gap-2 border-t border-white/20 pt-3 font-sans text-xs text-white/70 sm:flex-row sm:items-center">
               <p>© 2025 Pusaka Budaya Indonesia</p>
               <p>All rights reserved</p>
             </div>
