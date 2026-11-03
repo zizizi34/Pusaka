@@ -44,7 +44,7 @@ const Navbar = () => {
           href="/catalog" 
           className={`hover:text-[#a5523d] transition-colors ${pathname.startsWith('/catalog') ? 'text-gray-900' : ''}`}
         >
-          E-Commerce
+          E-Commerce 
         </Link>
       </div>
 
@@ -55,7 +55,7 @@ const Navbar = () => {
             <ShoppingBag className="h-5 w-5 stroke-[1.5]" />
           </Link>
         )}
-        <Link href="/dashboard" className="text-gray-700 hover:text-[#a5523d] transition-colors focus:outline-none">
+        <Link href="/admin/login" className="text-gray-700 hover:text-[#a5523d] transition-colors focus:outline-none">
           <User className="h-5 w-5 stroke-[1.5]" />
         </Link>
       </div>

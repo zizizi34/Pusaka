@@ -42,7 +42,28 @@ export default function EditProductPage() {
   });
 
   useEffect(() => {
-    if (productId) {
+    if (!productId) return;
+
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        if (res.ok) {
+          const found = await res.json();
+          setProduct(found);
+          setFormData({
+            name: found.name,
+            category: found.category,
+            price: found.price.toString(),
+            description: found.description || "",
+            image: found.image || "",
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn("Gagal mengambil produk dari API:", err);
+      }
+
+      // Fallback ke localStorage
       const storedProducts = localStorage.getItem("pusaka_products");
       if (storedProducts) {
         const products = JSON.parse(storedProducts);
@@ -54,12 +75,13 @@ export default function EditProductPage() {
             category: found.category,
             price: found.price.toString(),
             description: found.description || "",
-            image: found.image,
+            image: found.image || "",
           });
         }
       }
-      setLoading(false);
-    }
+    };
+
+    fetchProduct().finally(() => setLoading(false));
   }, [productId]);
 
   const handleChange = (
@@ -125,39 +147,44 @@ export default function EditProductPage() {
         return;
       }
 
-      const storedProducts = localStorage.getItem("pusaka_products");
-      let products = storedProducts ? JSON.parse(storedProducts) : [];
+      const payload = {
+        name: formData.name.trim(),
+        category: formData.category,
+        price: parseInt(formData.price, 10),
+        description: formData.description.trim(),
+        image: formData.image,
+      };
 
-      // Clean up previously saved massive images to free up space
-      products = products.map((p: any) => {
-        if (p.id !== productId && p.image && p.image.length > 200000) {
-          return { ...p, image: "" };
-        }
-        return p;
-      });
-
-      const updatedProducts = products.map((p: Product) =>
-        p.id === productId
-          ? {
-              ...p,
-              ...formData,
-              price: parseInt(formData.price),
-            }
-          : p
-      );
-
+      // 1. Kirim update ke API
       try {
-        localStorage.setItem("pusaka_products", JSON.stringify(updatedProducts));
-        alert("Produk berhasil diperbarui!");
-        router.push("/dashboard/products");
-      } catch (quotaError) {
-        console.error("Quota Exceeded:", quotaError);
-        alert("Penyimpanan penuh. Beberapa produk lama akan dihapus agar bisa menyimpan.");
-        const currentProduct = updatedProducts.find((p: Product) => p.id === productId);
-        localStorage.setItem("pusaka_products", JSON.stringify(currentProduct ? [currentProduct] : []));
-        alert("Produk berhasil diperbarui! (Data lama direset)");
-        router.push("/dashboard/products");
+        await fetch(`/api/products/${productId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+      } catch (apiErr) {
+        console.warn("Gagal update ke API:", apiErr);
       }
+
+      // 2. Sinkronkan juga ke localStorage
+      try {
+        const storedProducts = localStorage.getItem("pusaka_products");
+        let products = storedProducts ? JSON.parse(storedProducts) : [];
+        const index = products.findIndex((p: any) => p.id === productId);
+        if (index !== -1) {
+          products[index] = { ...products[index], ...payload };
+        } else {
+          products.unshift({ id: productId, ...payload, createdAt: new Date().toISOString() });
+        }
+        localStorage.setItem("pusaka_products", JSON.stringify(products));
+      } catch (lsErr) {
+        console.warn("LocalStorage warning:", lsErr);
+      }
+
+      alert("Produk berhasil diperbarui!");
+      router.push("/dashboard/products");
     } catch (error) {
       console.error("Error:", error);
       alert("Gagal memperbarui produk");

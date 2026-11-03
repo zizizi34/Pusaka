@@ -1,386 +1,256 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Activity,
   AlertTriangle,
-  ArrowDownRight,
   ArrowRight,
-  ArrowUpRight,
   Boxes,
   CircleDollarSign,
-  Download,
-  Filter,
-  Layers,
   Package,
-  Plus,
-  Sparkles,
-  TrendingUp,
+  PackagePlus,
   Warehouse,
-  type LucideIcon,
 } from "lucide-react";
+import { connection } from "next/server";
+import { prisma } from "@/lib/prisma";
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  createdAt: string;
-}
+const formatCurrency = new Intl.NumberFormat("id-ID", {
+  style: "currency",
+  currency: "IDR",
+  maximumFractionDigits: 0,
+});
 
-interface StatCard {
-  title: string;
-  value: string | number;
-  change: string;
-  icon: LucideIcon;
-  accent: string;
-}
+const formatNumber = new Intl.NumberFormat("id-ID");
+const formatDate = new Intl.DateTimeFormat("id-ID", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
 
-const chartBars = [36, 54, 48, 72, 68, 84, 92];
-const quickActions = [
-  { title: "Add product", description: "Capture a new SKU", href: "/dashboard/products/new", icon: Plus },
-  { title: "Import Excel", description: "Batch update inventory", href: "/dashboard/products", icon: Download },
-  { title: "Export report", description: "Share a clean summary", href: "/dashboard", icon: Filter },
-  { title: "Generate PDF", description: "Send to suppliers", href: "/dashboard", icon: Sparkles },
-];
+const LOW_STOCK_THRESHOLD = 5;
 
-const activityItems = [
-  { title: "Product added", description: "A new item was created and published for review.", time: "12 min ago", icon: Plus },
-  { title: "Stock adjusted", description: "Inventory levels were updated for premium packaging.", time: "1 hr ago", icon: Warehouse },
-  { title: "Category refined", description: "A new segment was created for seasonal products.", time: "3 hrs ago", icon: Boxes },
-];
+export default async function DashboardPage() {
+  await connection();
 
-const insightCards = [
-  { title: "Low stock", description: "3 SKUs need replenishment", tone: "warning", icon: AlertTriangle },
-  { title: "Best seller", description: "Signature bundle is trending", tone: "success", icon: TrendingUp },
-  { title: "Highest inventory", description: "Packaging supplies remain strong", tone: "neutral", icon: Package },
-];
+  const [totalProducts, totalCategories, inventory, recentProducts, categories] =
+    await Promise.all([
+      prisma.product.count(),
+      prisma.category.count(),
+      prisma.product.findMany({
+        select: { price: true, stock: true },
+      }),
+      prisma.product.findMany({
+        take: 5,
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          name: true,
+          sku: true,
+          price: true,
+          stock: true,
+          createdAt: true,
+          category: { select: { name: true } },
+        },
+      }),
+      prisma.category.findMany({
+        select: {
+          id: true,
+          name: true,
+          _count: { select: { products: true } },
+        },
+        orderBy: { name: "asc" },
+      }),
+    ]);
 
-export default function DashboardPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const totalStock = inventory.reduce((total, product) => total + product.stock, 0);
+  const inventoryValue = inventory.reduce(
+    (total, product) => total + product.price * product.stock,
+    0,
+  );
+  const lowStockProducts = inventory.filter(
+    (product) => product.stock <= LOW_STOCK_THRESHOLD,
+  ).length;
+  const outOfStockProducts = inventory.filter((product) => product.stock === 0).length;
+  const topCategories = [...categories]
+    .sort((first, second) => second._count.products - first._count.products)
+    .slice(0, 5);
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem("pusaka_products");
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-    }
-    setLoading(false);
-  }, []);
-
-  const totalValue = products.reduce((acc, product) => acc + product.price * 14, 0);
-  const categories = new Set(products.map((product) => product.category)).size;
-  const lowStock = Math.max(3, Math.round(products.length * 0.25));
-
-  const stats: StatCard[] = [
+  const stats = [
     {
-      title: "Total products",
-      value: products.length,
-      change: "+12.4%",
+      label: "Total produk",
+      value: formatNumber.format(totalProducts),
+      detail: "Produk tersimpan di katalog",
       icon: Package,
-      accent: "from-[#edf3e8] to-[#e4ebdb]",
+      iconClass: "bg-[#edf3e8] text-[#4c6640]",
     },
     {
-      title: "Categories",
-      value: categories,
-      change: "+2 new",
-      icon: Layers,
-      accent: "from-[#f6efe4] to-[#efe1cf]",
+      label: "Kategori",
+      value: formatNumber.format(totalCategories),
+      detail: "Kelompok produk",
+      icon: Boxes,
+      iconClass: "bg-[#f6efe4] text-[#a66c32]",
     },
     {
-      title: "Inventory value",
-      value: `Rp ${totalValue.toLocaleString("en-US")}`,
-      change: "+8.1%",
+      label: "Total stok",
+      value: formatNumber.format(totalStock),
+      detail: `${formatNumber.format(outOfStockProducts)} produk habis`,
+      icon: Warehouse,
+      iconClass: "bg-[#edf2f7] text-[#49637d]",
+    },
+    {
+      label: "Nilai persediaan",
+      value: formatCurrency.format(inventoryValue),
+      detail: "Harga produk × jumlah stok",
       icon: CircleDollarSign,
-      accent: "from-[#eef7ef] to-[#dfeedd]",
-    },
-    {
-      title: "Low stock",
-      value: lowStock,
-      change: "Needs review",
-      icon: AlertTriangle,
-      accent: "from-[#fff4e8] to-[#fde6c8]",
+      iconClass: "bg-[#eef7ef] text-[#47744b]",
     },
   ];
 
-  const recentItems = products.slice(-5).reverse();
-
   return (
     <div className="space-y-6">
-      {/* Page header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#e3e7da] bg-white px-2.5 py-1 text-xs font-medium text-[#607456] mb-2">
-            <Sparkles size={12} />
-            Premium operations control
+      <section className="relative overflow-hidden rounded-2xl bg-[#344633] px-5 py-6 text-white sm:px-8 sm:py-8">
+        <div className="pointer-events-none absolute -right-12 -top-24 h-64 w-64 rounded-full border border-white/10" />
+        <div className="pointer-events-none absolute -right-1 top-8 h-40 w-40 rounded-full border border-white/[0.07]" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.14em] text-white/60">
+              Ringkasan toko
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-[30px]">
+              Semua dalam kendali.
+            </h2>
+            <p className="mt-2 max-w-lg text-sm leading-6 text-white/70">
+              Pantau produk, persediaan, dan nilai inventaris toko Anda dari satu tempat.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#18211a] sm:text-3xl">
-            Dashboard
-          </h1>
-          <p className="mt-1 text-sm text-[#6b7280]">
-            Welcome back, Administrator. Here&apos;s today&apos;s inventory snapshot.
-          </p>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/inventory"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              <Warehouse size={16} />
+              Lihat persediaan
+            </Link>
+            <Link
+              href="/dashboard/products/new"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#344633] transition hover:bg-[#f1f3ed] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#344633]"
+            >
+              <PackagePlus size={16} />
+              Tambah produk
+            </Link>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-[#e5e8df] bg-white px-4 py-2 text-sm font-medium text-[#4b5563] transition hover:border-[#607456] hover:text-[#607456]">
-            <Download size={15} />
-            Export
-          </button>
-          <Link
-            href="/dashboard/products/new"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#607456] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#526342]"
-          >
-            <Plus size={15} />
-            Add Product
-          </Link>
-        </div>
-      </div>
+      </section>
 
-      {/* Filter pills */}
-      <div className="flex flex-wrap gap-1.5">
-        {[
-          { label: "This week", active: true },
-          { label: "Low stock", active: false },
-          { label: "Revenue", active: false },
-          { label: "Automation", active: false },
-        ].map((item) => (
-          <button
-            key={item.label}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
-              item.active
-                ? "bg-[#607456] text-white"
-                : "border border-[#e5e8df] bg-white text-[#637060] hover:border-[#607456] hover:text-[#607456]"
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section
+        aria-label="Statistik katalog dan persediaan"
+        className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"
+      >
         {stats.map((stat) => {
           const Icon = stat.icon;
+
           return (
-            <div
-              key={stat.title}
-              className="rounded-[24px] border border-[#ecece6] bg-white p-5 shadow-[0_10px_40px_rgba(0,0,0,0.06)] transition duration-200 hover:-translate-y-1"
+            <article
+              key={stat.label}
+              className="rounded-xl border border-[#e7eae2] bg-white p-4 sm:p-5"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-[#6b7280]">{stat.title}</p>
-                  <p className="mt-2 text-2xl font-semibold text-[#18211a]">{stat.value}</p>
-                  <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#f5f7f2] px-2.5 py-1 text-sm font-medium text-[#607456]">
-                    <ArrowUpRight size={14} />
-                    {stat.change}
-                  </div>
+              <div className="flex items-center gap-3">
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${stat.iconClass}`}
+                >
+                  <Icon size={18} strokeWidth={1.8} />
                 </div>
-                <div className={`flex h-12 w-12 items-center justify-center rounded-[16px] bg-gradient-to-br ${stat.accent}`}>
-                  <Icon size={20} className="text-[#607456]" />
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-[#788174]">{stat.label}</p>
+                  <p className="mt-1 break-words text-xl font-semibold tracking-tight text-[#202820]">
+                    {stat.value}
+                  </p>
                 </div>
               </div>
-            </div>
+              <p className="mt-3 border-t border-[#f0f2ed] pt-3 text-xs text-[#899286]">
+                {stat.detail}
+              </p>
+            </article>
           );
         })}
-      </div>
+      </section>
 
-      <div className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
-        <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between">
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.7fr)_minmax(280px,0.8fr)]">
+        <article className="min-w-0 rounded-xl border border-[#e7eae2] bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#edf0ea] px-5 py-4 sm:px-6">
             <div>
-              <p className="text-sm font-medium text-[#607456]">Inventory trend</p>
-              <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Stock movement</h2>
+              <h3 className="text-sm font-semibold text-[#273127]">Produk terbaru</h3>
+              <p className="mt-1 text-xs text-[#899286]">
+                Produk yang baru ditambahkan ke katalog
+              </p>
             </div>
-            <span className="rounded-full bg-[#edf3e8] px-3 py-1 text-sm font-medium text-[#607456]">
-              +18.2% from last month
-            </span>
-          </div>
-
-          <div className="mt-6 rounded-[24px] bg-[#fafaf8] p-5">
-            <div className="flex h-56 items-end gap-2">
-              {chartBars.map((height, index) => (
-                <div key={index} className="flex flex-1 flex-col items-center justify-end gap-2">
-                  <div className="w-full rounded-t-[14px] bg-gradient-to-t from-[#607456] via-[#6e835f] to-[#9bb078]" style={{ height: `${height}%` }} />
-                  <span className="text-xs text-[#6b7280]">W{index + 1}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 flex items-center justify-between text-sm text-[#6b7280]">
-              <span>Week 1</span>
-              <span>Week 7</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#607456]">Category distribution</p>
-              <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Portfolio mix</h2>
-            </div>
-            <span className="rounded-full bg-[#f8f0e7] px-3 py-1 text-sm font-medium text-[#c7782d]">
-              4 active groups
-            </span>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
-            <div
-              className="relative flex h-36 w-36 items-center justify-center rounded-full"
-              style={{ background: "conic-gradient(#607456 0% 42%, #5B7E3C 42% 68%, #C7782D 68% 86%, #E8E8E8 86% 100%)" }}
+            <Link
+              href="/dashboard/products"
+              className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-semibold text-[#55734b] transition hover:bg-[#f3f6f0]"
             >
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-white text-center text-sm font-semibold text-[#2c2c2c]">
-                42%
-              </div>
-            </div>
-            <div className="flex-1 space-y-3">
-              {[
-                { label: "Core goods", percent: "42%", color: "bg-[#607456]" },
-                { label: "Premium lines", percent: "26%", color: "bg-[#5B7E3C]" },
-                { label: "Seasonal", percent: "18%", color: "bg-[#C7782D]" },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between rounded-[16px] bg-[#fafaf8] px-3 py-2">
-                  <div className="flex items-center gap-2">
-                    <span className={`h-2.5 w-2.5 rounded-full ${item.color}`} />
-                    <span className="text-sm text-[#4b5563]">{item.label}</span>
-                  </div>
-                  <span className="text-sm font-semibold text-[#2c2c2c]">{item.percent}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#607456]">Recent activity</p>
-              <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Operations timeline</h2>
-            </div>
-            <button className="rounded-full border border-[#ecece6] bg-[#fafaf8] px-3 py-1.5 text-sm font-medium text-[#4b5563]">
-              View all
-            </button>
+              Lihat semua
+              <ArrowRight size={15} />
+            </Link>
           </div>
 
-          <div className="mt-6 space-y-3">
-            {activityItems.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.title} className="flex gap-3 rounded-[20px] bg-[#fafaf8] p-4">
-                  <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-[#edf3e8] text-[#607456]">
-                    <Icon size={18} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="font-semibold text-[#18211a]">{item.title}</p>
-                      <span className="text-xs font-medium text-[#6b7280]">{item.time}</span>
-                    </div>
-                    <p className="mt-1 text-sm leading-6 text-[#6b7280]">{item.description}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-[#607456]">Quick actions</p>
-              <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Keep operations flowing</h2>
-            </div>
-          </div>
-
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Link
-                  key={action.title}
-                  href={action.href}
-                  className="rounded-[20px] border border-[#ecece6] bg-[#fafaf8] p-4 transition hover:-translate-y-0.5 hover:shadow-sm"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#edf3e8] text-[#607456]">
-                    <Icon size={18} />
-                  </div>
-                  <h3 className="mt-3 font-semibold text-[#18211a]">{action.title}</h3>
-                  <p className="mt-1 text-sm text-[#6b7280]">{action.description}</p>
-                </Link>
-              );
-            })}
-          </div>
-        </section>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-        <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-sm font-medium text-[#607456]">Recent transactions</p>
-              <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Latest inventory updates</h2>
-            </div>
-            <button className="inline-flex items-center gap-2 rounded-full border border-[#ecece6] bg-[#fafaf8] px-3 py-2 text-sm font-medium text-[#4b5563]">
-              <Filter size={14} />
-              Filter
-            </button>
-          </div>
-
-          {loading ? (
-            <div className="mt-6 space-y-3">
-              {[0, 1, 2].map((item) => (
-                <div key={item} className="h-14 animate-pulse rounded-[16px] bg-[#f5f7f2]" />
-              ))}
-            </div>
-          ) : recentItems.length === 0 ? (
-            <div className="mt-8 rounded-[24px] border border-dashed border-[#e5e7eb] bg-[#fafaf8] p-8 text-center">
-              <Package size={28} className="mx-auto text-[#9ca3af]" />
-              <p className="mt-3 font-semibold text-[#374151]">No products yet</p>
-              <p className="mt-1 text-sm text-[#6b7280]">Add your first product to start tracking inventory.</p>
+          {recentProducts.length === 0 ? (
+            <div className="px-5 py-12 text-center sm:px-8">
+              <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-[#f2f5ef] text-[#718563]">
+                <Package size={21} />
+              </span>
+              <p className="mt-4 text-sm font-semibold text-[#354034]">Belum ada produk</p>
+              <p className="mx-auto mt-1 max-w-sm text-sm text-[#7a8276]">
+                Tambahkan produk pertama untuk mulai mengelola persediaan.
+              </p>
+              <Link
+                href="/dashboard/products/new"
+                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#607456] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#526342]"
+              >
+                <PackagePlus size={16} />
+                Tambah produk
+              </Link>
             </div>
           ) : (
-            <div className="mt-6 overflow-hidden rounded-[24px] border border-[#ecece6]">
-              <table className="min-w-full divide-y divide-[#f0f0ec] text-sm">
-                <thead className="bg-[#fafaf8] text-left text-[#6b7280]">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[620px] text-left text-sm">
+                <thead className="bg-[#fafbf9] text-[10px] uppercase tracking-[0.08em] text-[#879083]">
                   <tr>
-                    <th className="px-4 py-3 font-semibold">Product</th>
-                    <th className="px-4 py-3 font-semibold">Category</th>
-                    <th className="px-4 py-3 font-semibold">Stock</th>
-                    <th className="px-4 py-3 font-semibold">Price</th>
-                    <th className="px-4 py-3 font-semibold">Status</th>
-                    <th className="px-4 py-3 font-semibold">Updated</th>
+                    <th className="px-5 py-3 font-semibold sm:px-6">Produk</th>
+                    <th className="px-4 py-3 font-semibold">Kategori</th>
+                    <th className="px-4 py-3 font-semibold">Stok</th>
+                    <th className="px-4 py-3 font-semibold">Harga</th>
+                    <th className="px-5 py-3 font-semibold sm:px-6">Ditambahkan</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#f0f0ec] bg-white">
-                  {recentItems.map((product, index) => {
-                    const stock = Math.max(5, 30 - index * 4);
-                    const status = index === 0 ? "Healthy" : index === 1 ? "Low" : "Restock";
-                    const statusClass = status === "Healthy" ? "bg-[#ecfdf3] text-[#166534]" : status === "Low" ? "bg-[#fff7ed] text-[#c2410c]" : "bg-[#fef2f2] text-[#b91c1c]";
+                <tbody className="divide-y divide-[#f0f2ed]">
+                  {recentProducts.map((product) => {
+                    const isLowStock = product.stock <= LOW_STOCK_THRESHOLD;
+
                     return (
-                      <tr key={product.id} className="transition hover:bg-[#fafaf8]">
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-[#f3f6ee]">
-                              {product.image ? (
-                                <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
-                              ) : (
-                                <Package size={16} className="text-[#607456]" />
-                              )}
-                            </div>
-                            <div>
-                              <p className="font-semibold text-[#18211a]">{product.name}</p>
-                              <p className="text-xs text-[#6b7280]">{product.category}</p>
-                            </div>
-                          </div>
+                      <tr key={product.id} className="transition-colors hover:bg-[#fafbf9]">
+                        <td className="px-5 py-3.5 sm:px-6">
+                          <p className="font-medium text-[#303a30]">{product.name}</p>
+                          <p className="mt-0.5 text-[11px] text-[#929b8f]">
+                            {product.sku || "SKU belum diatur"}
+                          </p>
                         </td>
-                        <td className="px-4 py-3 text-[#4b5563]">{product.category}</td>
-                        <td className="px-4 py-3 text-[#4b5563]">{stock} units</td>
-                        <td className="px-4 py-3 font-semibold text-[#18211a]">Rp {product.price.toLocaleString("en-US")}</td>
-                        <td className="px-4 py-3">
-                          <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass}`}>{status}</span>
+                        <td className="px-4 py-3.5 text-xs text-[#626b60]">
+                          {product.category.name}
                         </td>
-                        <td className="px-4 py-3 text-[#6b7280]">{new Date(product.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</td>
+                        <td className="px-4 py-3.5">
+                          <span
+                            className={`inline-flex rounded-md px-2 py-1 text-[11px] font-semibold ${
+                              isLowStock
+                                ? "bg-[#fff4e8] text-[#a95016]"
+                                : "bg-[#edf5eb] text-[#397044]"
+                            }`}
+                          >
+                            {formatNumber.format(product.stock)} unit
+                          </span>
+                        </td>
+                        <td className="whitespace-nowrap px-4 py-3.5 text-xs font-medium text-[#465044]">
+                          {formatCurrency.format(product.price)}
+                        </td>
+                        <td className="whitespace-nowrap px-5 py-3.5 text-xs text-[#727b6f] sm:px-6">
+                          {formatDate.format(product.createdAt)}
+                        </td>
                       </tr>
                     );
                   })}
@@ -388,66 +258,99 @@ export default function DashboardPage() {
               </table>
             </div>
           )}
-        </section>
+        </article>
 
-        <div className="space-y-6">
-          <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-            <div className="flex items-center justify-between">
+        <div className="space-y-4">
+          <article className="rounded-xl border border-[#f0dfc9] bg-[#fffaf4] p-5">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-sm font-medium text-[#607456]">Inventory insights</p>
-                <h2 className="mt-1 text-xl font-semibold text-[#18211a]">AI-style overview</h2>
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#a66c32]">
+                  Perhatian stok
+                </p>
+                <h3 className="mt-2 text-sm font-semibold text-[#40372c]">
+                  Perlu diperiksa
+                </h3>
+                <p className="mt-1 text-xs leading-5 text-[#8a7966]">
+                  Produk dengan stok lima unit atau kurang
+                </p>
               </div>
-              <div className="rounded-full bg-[#f4f7ee] px-2.5 py-1 text-xs font-semibold text-[#607456]">
-                AI view
-              </div>
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8ead8] text-[#a66c32]">
+                <AlertTriangle size={17} />
+              </span>
+            </div>
+            <p className="mt-5 text-3xl font-semibold tracking-tight text-[#352f27]">
+              {formatNumber.format(lowStockProducts)}
+              <span className="ml-2 text-xs font-medium text-[#8a7966]">produk perlu perhatian</span>
+            </p>
+            <Link
+              href="/dashboard/inventory"
+              className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#8f5b27] hover:text-[#70451e]"
+            >
+              Periksa persediaan
+              <ArrowRight size={15} />
+            </Link>
+          </article>
+
+          <article className="rounded-xl border border-[#e7eae2] bg-white p-5">
+            <div>
+              <h3 className="text-sm font-semibold text-[#303a30]">Kategori produk</h3>
+              <p className="mt-1 text-xs text-[#899286]">
+                Sebaran produk dalam katalog
+              </p>
             </div>
 
-            <div className="mt-5 space-y-3">
-              {insightCards.map((item) => {
-                const Icon = item.icon;
-                const toneClass = item.tone === "warning" ? "bg-[#fff7ed] text-[#c2410c]" : item.tone === "success" ? "bg-[#ecfdf3] text-[#166534]" : "bg-[#f5f7f2] text-[#4b5563]";
-                return (
-                  <div key={item.title} className="rounded-[20px] border border-[#ecece6] bg-[#fafaf8] p-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-2xl ${toneClass}`}>
-                        <Icon size={18} />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#18211a]">{item.title}</p>
-                        <p className="text-sm text-[#6b7280]">{item.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+            {topCategories.length === 0 ? (
+              <p className="mt-4 rounded-lg bg-[#f8f9f6] p-4 text-xs leading-5 text-[#7a8276]">
+                Belum ada kategori untuk ditampilkan.
+              </p>
+            ) : (
+              <ul className="mt-5 space-y-4">
+                {topCategories.map((category) => {
+                  const percentage =
+                    totalProducts === 0
+                      ? 0
+                      : Math.round((category._count.products / totalProducts) * 100);
 
-          <section className="rounded-[28px] border border-[#ecece6] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-[#607456]">Health score</p>
-                <h2 className="mt-1 text-xl font-semibold text-[#18211a]">Stock stability</h2>
-              </div>
-            </div>
-            <div className="mt-5">
-              <div className="flex items-end justify-between">
-                <p className="text-4xl font-semibold text-[#18211a]">89%</p>
-                <span className="rounded-full bg-[#ecfdf3] px-2.5 py-1 text-sm font-semibold text-[#166534]">
-                  Stable
-                </span>
-              </div>
-              <div className="mt-4 h-2 rounded-full bg-[#f4f5f7]">
-                <div className="h-2 rounded-full bg-gradient-to-r from-[#607456] to-[#5B7E3C]" style={{ width: "89%" }} />
-              </div>
-              <div className="mt-3 flex items-center justify-between text-sm text-[#6b7280]">
-                <span>Target 95%</span>
-                <span>+5% this week</span>
-              </div>
-            </div>
-          </section>
+                  return (
+                    <li key={category.id}>
+                      <div className="mb-2 flex items-center justify-between gap-3 text-xs">
+                        <span className="truncate font-medium text-[#465044]">
+                          {category.name}
+                        </span>
+                        <span className="shrink-0 text-[11px] text-[#7a8276]">
+                          {formatNumber.format(category._count.products)} (
+                          {formatNumber.format(percentage)}%)
+                        </span>
+                      </div>
+                      <div
+                        className="h-1.5 overflow-hidden rounded-full bg-[#edf0ea]"
+                        role="progressbar"
+                        aria-label={`Proporsi produk kategori ${category.name}`}
+                        aria-valuenow={percentage}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                      >
+                        <div
+                          className="h-full rounded-full bg-[#718563]"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+            <Link
+              href="/dashboard/categories"
+              className="mt-5 inline-flex items-center gap-1.5 border-t border-[#f0f2ed] pt-4 text-xs font-semibold text-[#55734b] transition-colors hover:text-[#3d5c35]"
+            >
+              Kelola kategori
+              <ArrowRight size={15} />
+            </Link>
+          </article>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

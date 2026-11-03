@@ -1,22 +1,92 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
-import { Heart, Star, Minus, Plus, Share2, Play } from 'lucide-react';
+import { Heart, Star, Minus, Plus, Share2, Play, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const ProductDetail = () => {
+  const params = useParams();
+  const productId = params?.id as string;
+
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('L');
   const [selectedColor, setSelectedColor] = useState('Maroon');
+  const [productData, setProductData] = useState<{
+    id: string;
+    name: string;
+    price: number;
+    category?: string;
+    description?: string;
+    image?: string;
+    stock?: number;
+  }>({
+    id: "1",
+    name: "Outer Batik Marun Floral",
+    price: 450000,
+    category: "Batik",
+    description: "Outer batik eksklusif dengan sentuhan klasik dan bahan premium.",
+    image: "/assets/batik_shirt.png",
+    stock: 10,
+  });
+
+  useEffect(() => {
+    if (!productId) return;
+
+    const fetchDetail = async () => {
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setProductData({
+            id: data.id,
+            name: data.name,
+            price: Number(data.price),
+            category: data.category,
+            description: data.description || "Produk lokal autentik berkualitas prima buatan pengrajin Indonesia.",
+            image: data.image || "/assets/batik_shirt.png",
+            stock: data.stock || 15,
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn("Gagal fetch product detail dari API:", err);
+      }
+
+      // Check localStorage
+      try {
+        const stored = localStorage.getItem("pusaka_products");
+        if (stored) {
+          const list = JSON.parse(stored);
+          const found = list.find((p: any) => p.id === productId);
+          if (found) {
+            setProductData({
+              id: found.id,
+              name: found.name,
+              price: Number(found.price),
+              category: found.category,
+              description: found.description || "Produk lokal autentik berkualitas prima buatan pengrajin Indonesia.",
+              image: found.image || "/assets/batik_shirt.png",
+              stock: found.stock || 15,
+            });
+          }
+        }
+      } catch (e) {
+        console.warn("Gagal load dari localStorage:", e);
+      }
+    };
+
+    fetchDetail();
+  }, [productId]);
 
   const relatedProducts = [
-    { id: "2", name: "Kemeja Batik Biru Emas", price: "Rp 525.000", image: "/product_blue.png", rating: 4 },
-    { id: "3", name: "Kain Tenun Ikat Sumba", price: "Rp 1.250.000", image: "/craft_1.png", rating: 5 },
-    { id: "4", name: "Selendang Sutra Batik", price: "Rp 320.000", image: "/product_maroon.png", rating: 4 },
+    { id: "2", name: "Kemeja Batik Biru Emas", price: "Rp 525.000", image: "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop", rating: 4 },
+    { id: "3", name: "Kain Tenun Ikat Sumba", price: "Rp 1.250.000", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=600&auto=format&fit=crop", rating: 5 },
+    { id: "4", name: "Selendang Sutra Batik", price: "Rp 320.000", image: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?q=80&w=600&auto=format&fit=crop", rating: 4 },
   ];
 
   return (
@@ -32,12 +102,20 @@ const ProductDetail = () => {
               <div className="md:col-span-2 flex flex-row md:flex-col space-x-4 md:space-x-0 md:space-y-4 order-2 md:order-1">
                 {[1, 2, 3, 4].map((i) => (
                   <div key={i} className="relative aspect-square w-20 md:w-full rounded-lg overflow-hidden bg-pusaka-gray cursor-pointer border-2 border-transparent hover:border-accent-gold transition-all">
-                    <Image src="/product_maroon.png" alt="Thumbnail" fill className="object-cover" />
+                    {productData.image ? (
+                      <img src={productData.image} alt="Thumbnail" className="w-full h-full object-cover" />
+                    ) : (
+                      <img src="/assets/batik_shirt.png" alt="Thumbnail" className="w-full h-full object-cover" />
+                    )}
                   </div>
                 ))}
               </div>
               <div className="md:col-span-10 relative aspect-[4/5] rounded-2xl overflow-hidden bg-pusaka-gray order-1 md:order-2">
-                <Image src="/product_maroon.png" alt="Outer Batik Marun Floral" fill className="object-cover" priority />
+                {productData.image ? (
+                  <img src={productData.image} alt={productData.name} className="w-full h-full object-cover" />
+                ) : (
+                  <img src="/assets/batik_shirt.png" alt={productData.name} className="w-full h-full object-cover" />
+                )}
                 <button className="absolute top-6 right-6 p-3 bg-white/80 backdrop-blur-md rounded-full shadow-lg text-pusaka-black hover:text-accent-maroon transition-all">
                   <Heart className="h-6 w-6" />
                 </button>
@@ -47,19 +125,29 @@ const ProductDetail = () => {
             {/* Product Info */}
             <div className="lg:col-span-5 flex flex-col">
               <div className="mb-8">
+                <span className="text-xs uppercase tracking-widest font-semibold text-[#d48358] block mb-2">
+                  {productData.category || "Produk Budaya"}
+                </span>
                 <div className="flex items-center space-x-2 mb-4">
                   <div className="flex">
                     {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 text-accent-gold fill-accent-gold" />)}
                   </div>
                   <span className="text-sm text-gray-500 font-medium">(48 Reviews)</span>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-pusaka-black mb-4">
-                  Outer Batik Marun Floral
+                <h1 className="text-3xl md:text-5xl font-serif font-bold text-pusaka-black mb-4">
+                  {productData.name}
                 </h1>
-                <div className="flex items-baseline space-x-4">
-                  <span className="text-3xl font-bold text-accent-maroon">Rp 450.000</span>
-                  <span className="text-xl text-gray-400 line-through">Rp 580.000</span>
+                <div className="flex items-baseline space-x-4 mb-4">
+                  <span className="text-3xl font-bold text-accent-maroon">
+                    Rp {productData.price.toLocaleString('id-ID')}
+                  </span>
+                  <span className="text-xl text-gray-400 line-through">
+                    Rp {(productData.price * 1.25).toLocaleString('id-ID')}
+                  </span>
                 </div>
+                <p className="text-sm text-gray-600 leading-relaxed font-sans">
+                  {productData.description}
+                </p>
               </div>
 
               {/* Color Selection */}

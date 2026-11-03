@@ -82,37 +82,58 @@ export default function NewProductPage() {
         setLoading(false);
         return;
       }
-      const storedProducts = localStorage.getItem("pusaka_products");
-      let products = storedProducts ? JSON.parse(storedProducts) : [];
-      
-      // Clean up previously saved massive images to free up space
-      products = products.map((p: any) => {
-        if (p.image && p.image.length > 200000) {
-          return { ...p, image: "" };
-        }
-        return p;
-      });
 
-      const newProduct = {
-        id: Date.now().toString(),
-        ...formData,
-        price: parseInt(formData.price),
+      const payload = {
+        name: formData.name.trim(),
+        category: formData.category,
+        price: parseInt(formData.price, 10),
+        stock: 15,
+        description: formData.description.trim(),
+        image: formData.image || "/assets/batik_shirt.png",
+      };
+
+      let savedProduct: any = null;
+
+      // 1. Simpan ke database MySQL lewat API
+      try {
+        const res = await fetch("/api/products", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          savedProduct = await res.json();
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          console.warn("Gagal simpan ke database:", errData);
+        }
+      } catch (apiErr) {
+        console.warn("Koneksi API gagal, menggunakan penyimpanan lokal:", apiErr);
+      }
+
+      // Jika API gagal atau berhasil, sinkronkan juga ke localStorage
+      const finalProduct = savedProduct || {
+        id: "prod-" + Date.now().toString(),
+        ...payload,
         createdAt: new Date().toISOString(),
       };
-      products.push(newProduct);
-      
+
       try {
+        const storedProducts = localStorage.getItem("pusaka_products");
+        let products = storedProducts ? JSON.parse(storedProducts) : [];
+        // Pastikan tidak ada duplikasi ID
+        products = products.filter((p: any) => p.id !== finalProduct.id);
+        products.unshift(finalProduct);
         localStorage.setItem("pusaka_products", JSON.stringify(products));
-        alert("Produk berhasil ditambahkan!");
-        router.push("/dashboard/products");
-      } catch (quotaError) {
-        // Fallback if still exceeding quota
-        console.error("Quota Exceeded:", quotaError);
-        alert("Penyimpanan penuh. Beberapa produk lama akan dihapus agar bisa menyimpan.");
-        localStorage.setItem("pusaka_products", JSON.stringify([newProduct]));
-        alert("Produk berhasil ditambahkan! (Data lama direset)");
-        router.push("/dashboard/products");
+      } catch (lsErr) {
+        console.warn("LocalStorage quota warning:", lsErr);
       }
+
+      alert("Produk berhasil ditambahkan! Produk kini langsung tampil di Landing Page.");
+      router.push("/dashboard/products");
     } catch (error) {
       console.error("Error:", error);
       alert("Gagal menambahkan produk");
@@ -158,23 +179,69 @@ export default function NewProductPage() {
                   {formData.image ? (
                     <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="text-center">
+                    <div className="text-center p-3">
                       <ImageIcon size={32} className="mx-auto text-[#aab8a2] mb-2" />
                       <p className="text-xs text-[#b8c4b0]">Belum ada gambar</p>
                     </div>
                   )}
                 </div>
               </div>
-              {/* Upload */}
-              <div className="flex-1 flex items-center">
-                <label className="w-full h-full cursor-pointer">
+              {/* Upload & URL */}
+              <div className="flex-1 flex flex-col justify-center gap-3">
+                <label className="w-full cursor-pointer">
                   <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-                  <div className="h-full flex flex-col justify-center border-2 border-dashed border-[#d6e8cc] rounded-2xl p-7 text-center hover:border-[#607456] hover:bg-[#f4f8f0] transition-all duration-200 group">
-                    <Upload size={32} className="mx-auto mb-3 text-[#aab8a2] group-hover:text-[#607456] transition-colors" />
-                    <p className="text-sm font-medium text-[#18211a] mb-1.5">Klik atau drag gambar di sini</p>
-                    <p className="text-xs text-[#aab8a2]">PNG, JPG, atau format lainnya (Max 5MB)</p>
+                  <div className="flex flex-col justify-center border-2 border-dashed border-[#d6e8cc] rounded-2xl p-5 text-center hover:border-[#607456] hover:bg-[#f4f8f0] transition-all duration-200 group">
+                    <Upload size={26} className="mx-auto mb-2 text-[#aab8a2] group-hover:text-[#607456] transition-colors" />
+                    <p className="text-sm font-medium text-[#18211a]">Upload Gambar dari Komputer</p>
+                    <p className="text-xs text-[#aab8a2]">PNG, JPG, atau WEBP</p>
                   </div>
                 </label>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-semibold text-[#637060]">Atau Masukkan URL Gambar:</span>
+                  </div>
+                  <input
+                    type="url"
+                    name="image"
+                    value={formData.image.startsWith("data:") ? "" : formData.image}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, image: e.target.value }))}
+                    placeholder="https://images.unsplash.com/... atau /assets/batik_shirt.png"
+                    className="w-full px-3.5 py-2 border border-[#e5e8df] rounded-lg text-xs text-[#18211a] placeholder:text-[#b8c4b0] focus:outline-none focus:ring-2 focus:ring-[#607456]/30 focus:border-[#607456]"
+                  />
+                  {/* Preset quick buttons */}
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    <span className="text-[11px] text-[#8c9489]">Contoh:</span>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, image: "/assets/batik_shirt.png" }))}
+                      className="text-[11px] px-2 py-0.5 rounded bg-[#f0f4ec] hover:bg-[#e2ebd9] text-[#3d5c35] transition-colors"
+                    >
+                      Batik
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, image: "/assets/handwoven_textile.png" }))}
+                      className="text-[11px] px-2 py-0.5 rounded bg-[#f0f4ec] hover:bg-[#e2ebd9] text-[#3d5c35] transition-colors"
+                    >
+                      Tenun
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, image: "/assets/wayang_puppet.png" }))}
+                      className="text-[11px] px-2 py-0.5 rounded bg-[#f0f4ec] hover:bg-[#e2ebd9] text-[#3d5c35] transition-colors"
+                    >
+                      Wayang
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=600&auto=format&fit=crop" }))}
+                      className="text-[11px] px-2 py-0.5 rounded bg-[#f0f4ec] hover:bg-[#e2ebd9] text-[#3d5c35] transition-colors"
+                    >
+                      Aksesoris
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

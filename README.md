@@ -16,6 +16,20 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Admin Login
+
+Set these variables in the ignored `.env` file before starting the app:
+
+```env
+ADMIN_USERNAME=your-admin-username
+ADMIN_PASSWORD=use-a-strong-unique-password
+ADMIN_SESSION_SECRET=replace-with-at-least-32-random-characters
+```
+
+The admin login is available at `/admin/login`. Dashboard pages and product
+creation, editing, deletion, and stock-update endpoints require an authenticated
+admin session. The session expires after eight hours. Use HTTPS in production.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

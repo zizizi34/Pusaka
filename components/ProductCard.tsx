@@ -23,14 +23,31 @@ const ProductCard = ({ id, name, price, image, rating }: ProductCardProps) => {
       className="group relative"
     >
       <Link href={`/product/${id}`}>
-        <div className="relative aspect-product overflow-hidden rounded-xl bg-pusaka-gray">
-          <Image
-            src={image}
-            alt={name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full text-pusaka-black hover:text-accent-maroon transition-colors shadow-sm">
+        <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-pusaka-gray">
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = "/assets/batik_shirt.png";
+              }}
+            />
+          ) : (
+            <img
+              src="/assets/batik_shirt.png"
+              alt={name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          )}
+          <button 
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full text-pusaka-black hover:text-accent-maroon transition-colors shadow-sm z-10"
+          >
             <Heart className="h-5 w-5" />
           </button>
         </div>

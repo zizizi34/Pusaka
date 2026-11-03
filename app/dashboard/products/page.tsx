@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -9,6 +9,8 @@ interface Product {
   name: string;
   category: string;
   price: number;
+  stock: number;
+  sku?: string;
   image: string;
   createdAt: string;
 }
@@ -21,18 +23,27 @@ export default function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [categories, setCategories] = useState<string[]>([]);
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem("pusaka_products");
-    if (storedProducts) {
-      const parsed = JSON.parse(storedProducts);
-      setProducts(parsed);
-      setFilteredProducts(parsed);
-      const uniqueCategories = Array.from(
-        new Set(parsed.map((p: Product) => p.category))
-      );
-      setCategories(uniqueCategories as string[]);
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (res.ok) {
+        const data: Product[] = await res.json();
+        setProducts(data);
+        setFilteredProducts(data);
+        const uniqueCategories = Array.from(
+          new Set(data.map((p) => p.category))
+        );
+        setCategories(uniqueCategories);
+      }
+    } catch (err) {
+      console.error("Gagal mengambil data produk dari database:", err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProducts();
   }, []);
 
   useEffect(() => {
@@ -48,11 +59,25 @@ export default function ProductsPage() {
     setFilteredProducts(filtered);
   }, [searchTerm, categoryFilter, products]);
 
-  const handleDelete = (id: string) => {
-    if (confirm("Yakin ingin menghapus produk ini?")) {
-      const updated = products.filter((p) => p.id !== id);
-      setProducts(updated);
-      localStorage.setItem("pusaka_products", JSON.stringify(updated));
+  const handleDelete = async (id: string) => {
+    if (confirm("Yakin ingin menghapus produk ini dari database?")) {
+      try {
+        const res = await fetch(`/api/products/${id}`, {
+          method: "DELETE",
+        });
+        if (res.ok) {
+          const updated = products.filter((p) => p.id !== id);
+          setProducts(updated);
+          // Also cleanup localStorage if any
+          localStorage.removeItem("pusaka_products");
+          alert("Produk berhasil dihapus dari database!");
+        } else {
+          alert("Gagal menghapus produk");
+        }
+      } catch (err) {
+        console.error("Error deleting product:", err);
+        alert("Terjadi kesalahan saat menghapus produk");
+      }
     }
   };
 
@@ -62,7 +87,7 @@ export default function ProductsPage() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#18211a] sm:text-3xl">Manajemen Produk</h1>
-          <p className="text-[#637060] text-sm mt-1">Kelola semua produk dalam sistem</p>
+          <p className="text-[#637060] text-sm mt-1">Kelola semua produk dalam sistem (Tersinkron Database MySQL)</p>
         </div>
         <Link
           href="/dashboard/products/new"
@@ -106,13 +131,13 @@ export default function ProductsPage() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-xl border border-[#e5e8df] overflow-hidden">
+      <div className="bg-white rounded-xl border border-[#e5e8df] overflow-hidden shadow-sm">
         {loading ? (
           <div className="p-12 text-center">
             <div className="inline-block animate-spin">
               <Package className="text-[#aab8a2]" size={28} />
             </div>
-            <p className="text-[#637060] mt-4 text-sm">Memuat data produk...</p>
+            <p className="text-[#637060] mt-4 text-sm">Memuat data produk dari database...</p>
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="p-12 text-center">
@@ -120,11 +145,11 @@ export default function ProductsPage() {
               <Package size={26} className="text-[#aab8a2]" />
             </div>
             <p className="text-[#18211a] font-semibold mb-1">
-              {products.length === 0 ? "Belum ada produk" : "Tidak ada produk yang sesuai"}
+              {products.length === 0 ? "Belum ada produk di database" : "Tidak ada produk yang sesuai"}
             </p>
             <p className="text-[#637060] text-sm mb-6">
               {products.length === 0
-                ? "Mulai tambahkan produk untuk mengelola inventori"
+                ? "Mulai tambahkan produk untuk menyimpan ke database MySQL"
                 : "Coba ubah filter pencarian Anda"}
             </p>
             <Link
@@ -144,6 +169,7 @@ export default function ProductsPage() {
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-[#637060] uppercase tracking-wide">Nama Produk</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-[#637060] uppercase tracking-wide">Kategori</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-[#637060] uppercase tracking-wide">Harga</th>
+                    <th className="px-5 py-3.5 text-left text-xs font-semibold text-[#637060] uppercase tracking-wide">Stock</th>
                     <th className="px-5 py-3.5 text-left text-xs font-semibold text-[#637060] uppercase tracking-wide">Tanggal</th>
                     <th className="px-5 py-3.5 text-center text-xs font-semibold text-[#637060] uppercase tracking-wide">Aksi</th>
                   </tr>
@@ -162,7 +188,10 @@ export default function ProductsPage() {
                               </div>
                             )}
                           </div>
-                          <span className="font-medium text-[#18211a]">{product.name}</span>
+                          <div>
+                            <span className="font-medium text-[#18211a] block">{product.name}</span>
+                            {product.sku && <span className="text-xs text-[#8c9489]">{product.sku}</span>}
+                          </div>
                         </div>
                       </td>
                       <td className="px-5 py-3.5 text-sm">
@@ -172,6 +201,16 @@ export default function ProductsPage() {
                       </td>
                       <td className="px-5 py-3.5 text-sm font-semibold text-[#18211a]">
                         Rp {product.price.toLocaleString("id-ID")}
+                      </td>
+                      <td className="px-5 py-3.5 text-sm">
+                        <span className={`inline-flex items-center gap-1 font-semibold px-2.5 py-1 rounded-full text-xs ${(product.stock ?? 0) <= 5
+                            ? "bg-red-50 text-red-700"
+                            : (product.stock ?? 0) <= 15
+                              ? "bg-amber-50 text-amber-700"
+                              : "bg-[#edf3e8] text-[#3d5c35]"
+                          }`}>
+                          {product.stock ?? 0} unit
+                        </span>
                       </td>
                       <td className="px-5 py-3.5 text-sm text-[#637060]">
                         {new Date(product.createdAt).toLocaleDateString("id-ID", {
@@ -211,7 +250,7 @@ export default function ProductsPage() {
               <p className="text-xs text-[#637060]">
                 Total Nilai:{" "}
                 <span className="font-semibold text-[#18211a]">
-                  Rp {filteredProducts.reduce((acc, p) => acc + p.price, 0).toLocaleString("id-ID")}
+                  Rp {filteredProducts.reduce((acc, p) => acc + (p.price * (p.stock || 1)), 0).toLocaleString("id-ID")}
                 </span>
               </p>
             </div>
